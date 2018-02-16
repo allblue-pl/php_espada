@@ -96,7 +96,7 @@ class Espada
 			$class_path .= '/' . $class_array[$i];
 		$class_path .= '.php';
 
-		$class_path = E\Package::Path($class_array[0], $class_path);
+		$class_path = E\Package::Path($class_array[0], $class_path, true);
 
 		if ($class_path === null)
 			return false;

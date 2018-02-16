@@ -5,13 +5,14 @@ defined('_ESPADA') or die(NO_ACCESS);
 class Package
 {
 
+    static private $PackagePaths = null;
     static private $Overwrites = [];
 
-    static public function Details($file_path, $no_overwrites = false)
+    static public function Details($filePath, $noOverwrites = false)
     {
-        $file_path = $package . '/' . $path;
+        $filePath = $package . '/' . $path;
 
-        if (!$no_overwrites) {
+        if (!$noOverwrites) {
             if (isset(self::$Overwrites[$package])) {
                 foreach (self::$Overwrites[$package] as $to_package => $to_path) {
                     $details = Package::Details($to_package,
@@ -22,26 +23,18 @@ class Package
             }
         }
 
-        if (File::Exists(PATH_ESITE . '/packages/' . $file_path)) {
-            $file_details = array(
-                'package_path' => PATH_ESITE . '/packages/' . $package,
-                'package_uri' => URI_ESITE . 'esite/packages/' . $package,
-                'path' => PATH_ESITE . '/packages/' . $file_path,
-                'uri' => URI_ESITE . 'packages/' . $file_path
-            );
-
-            return $file_details;
-        }
-
-        if (File::Exists(PATH_ECORE . '/' . $file_path)) {
-            $file_details = array(
-                'package_path' => PATH_ECORE . '/' . $package,
-                'package_uri' => URI_ECORE . $package,
-                'path' => PATH_ECORE . '/' . $file_path,
-                'uri' => URI_ECORE . $file_path
-            );
-
-            return $file_details;
+        foreach (self::GetPackagePaths() as $packagePath) {
+            // echo 'Details: ' . $packagePath . '/' . $filePath;
+            if (File::Exists($packagePath . '/' . $filePath)) {
+                $file_details = array(
+                    'package_path' => PATH_ESITE . '/packages/' . $package,
+                    'package_uri' => URI_ESITE . 'esite/packages/' . $package,
+                    'path' => PATH_ESITE . '/packages/' . $filePath,
+                    'uri' => URI_ESITE . 'packages/' . $filePath
+                );
+    
+                return $file_details;
+            }
         }
 
         return null;
@@ -61,17 +54,17 @@ class Package
                 $dir . $path_array[1] . $ext);
     }
 
-    static public function Path($package, $path, $no_overwrites = false)
+    static public function Path($package, $path, $noOverwrites = false)
     {
-        $file_path = $package . '/' . $path;
+        $filePath = $package . '/' . $path;
         // if ($package === 'site') {
-        //     if (File::Exists(PATH_ESITE . '/' . $file_path))
-        //         return PATH_ESITE . '/' . $file_path;
+        //     if (File::Exists(PATH_ESITE . '/' . $filePath))
+        //         return PATH_ESITE . '/' . $filePath;
         //
         //     return null;
         // }
 
-        if (!$no_overwrites) {
+        if (!$noOverwrites) {
             if (isset(self::$Overwrites[$package])) {
                 foreach (self::$Overwrites[$package] as $to_package => $to_path) {
                     $t_path = Package::Path($to_package,
@@ -82,11 +75,11 @@ class Package
             }
         }
 
-        if (File::Exists(PATH_ESITE . '/packages/' . $file_path))
-            return PATH_ESITE . '/packages/' . $file_path;
-
-        if (File::Exists(PATH_ECORE . '/' . $file_path))
-            return PATH_ECORE . '/' . $file_path;
+        foreach (self::GetPackagePaths() as $packagePath) {
+            // echo 'Path: ' . $packagePath . '/' . $filePath;
+            if (File::Exists($packagePath . '/' . $filePath))
+                return $packagePath . '/' . $filePath;
+        }
 
         return null;
     }
@@ -105,17 +98,17 @@ class Package
                 $dir . $path_array[1] . $ext);
     }
 
-    static public function Uri($package, $path, $no_overwrites = false)
+    static public function Uri($package, $path, $noOverwrites = false)
     {
-        $file_path = $package . '/' . $path;
+        $filePath = $package . '/' . $path;
 
         // if ($package === 'site') {
-        //     if (File::Exists(PATH_ESITE . '/' . $file_path))
-        //         return SITE_BASE . $file_path;
+        //     if (File::Exists(PATH_ESITE . '/' . $filePath))
+        //         return SITE_BASE . $filePath;
         //
         //     return null;
         // }
-        if (!$no_overwrites) {
+        if (!$noOverwrites) {
             if (isset(self::$Overwrites[$package])) {
                 foreach (self::$Overwrites[$package] as $to_package => $to_path) {
                     $uri = Package::Uri($to_package,
@@ -126,11 +119,10 @@ class Package
             }
         }
 
-        if (File::Exists(PATH_ESITE . '/packages/' . $file_path))
-            return URI_ESITE . 'packages/' . $file_path;
-
-        if (File::Exists(PATH_ECORE . '/' . $file_path))
-            return URI_ECORE . $file_path;
+        foreach (self::GetPackagePaths() as $packageName => $packagePath) {
+            if (File::Exists($packagePath . '/' . $filePath))
+                return URI_ESITE . 'packages/' .  $packageName . '/' . $filePath;
+        }
 
         return null;
     }
@@ -168,6 +160,25 @@ class Package
         unset(self::$Overwrites[$from_package][$to_package]);
         if (count(self::$Overwrites[$from_package]) === 0)
             unset(self::$Overwrites[$from_package]);
+    }
+
+
+    static private function GetPackagePaths()
+    {
+        if (self::$PackagePaths === null) {
+            self::$PackagePaths = [];
+            $packageNames = scandir(PATH_ESITE . '/packages');
+            foreach ($packageNames as $packageName) {
+                if ($packageName === '.' || $packageName === '..')
+                    continue;
+
+                $packagePath = PATH_ESITE . '/packages/' . $packageName;
+                if (is_dir($packagePath))
+                    self::$PackagePaths[$packageName] = $packagePath;
+            }
+        }
+        
+        return self::$PackagePaths;
     }
 
 }
