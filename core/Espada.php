@@ -217,8 +217,10 @@ class Espada
 
 		spl_autoload_register('Espada::LoadECoreClass');
 
+		if (!\E\File::Exists(PATH_CACHE))
+			mkdir(PATH_CACHE, 0700, true);
 		if (!\E\File::Exists(PATH_TMP))
-			mkdir(PATH_TMP);
+			mkdir(PATH_TMP, 0700, true);
 
 		$e_uri = new \E\Uri($_SERVER['REQUEST_URI']);
 		$e_langs = new \E\Langs();
