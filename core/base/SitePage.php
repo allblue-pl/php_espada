@@ -14,9 +14,19 @@ class SitePage
         $this->name = $name;
     }
 
-    public function alias($uri, $lang_name = '')
+    public function alias($arg1, $arg2 = null)
     {
-        $this->pages->addPageAlias($lang_name, $this->name, $uri);
+        $langName = null;
+        $uri = null;
+        if ($arg2 === null) {
+            $langName = '';
+            $uri = $arg1;
+        } else {
+            $langName = $arg1;
+            $uri = $arg2;
+        }
+
+        $this->pages->addPageAlias($langName, $this->name, $uri);
 
         return $this;
     }
