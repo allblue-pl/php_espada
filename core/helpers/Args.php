@@ -73,7 +73,7 @@ class Args
 	{
 		$args = [];
 		foreach ($_POST as $arg_name => $arg)
-			$args[$arg_name] = urldecode($arg);
+			$args[$arg_name] = $arg;
 
 		foreach ($_FILES as $arg_name => $arg)
 			$args[$arg_name] = $arg;
