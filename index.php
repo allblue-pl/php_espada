@@ -1,6 +1,6 @@
 <?php defined('_ESPADA') or die(NO_ACCESS);
 
-define('PREINIT_CONTENTS', ob_get_contents());
+define('PREINIT_CONTENTS', ob_get_contents() === FALSE ? '' : ob_get_contents());
 ob_end_clean();
 
 /* Defines */

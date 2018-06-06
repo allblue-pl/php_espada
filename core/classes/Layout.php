@@ -4,9 +4,9 @@ defined('_ESPADA') or die(NO_ACCESS);
 class Layout implements ILayout
 {
 
-    static public function _($layout_path, $fields = [])
+    static public function _($layoutPath, $fields = [])
     {
-        return new Layout($layout_path, $fields);
+        return new Layout($layoutPath, $fields);
     }
 
     static private function RequireFile($eFilePath, Holders $eHolders,
@@ -35,10 +35,10 @@ class Layout implements ILayout
 
     private $validated = false;
 
-    public function __construct($layout_path = null, $fields = [])
+    public function __construct($layoutPath = null, $fields = [])
     {
-        if ($layout_path !== null)
-            $this->setPath($layout_path);
+        if ($layoutPath !== null)
+            $this->setPath($layoutPath);
 
         $this->fields = $fields;
     }
@@ -100,19 +100,19 @@ class Layout implements ILayout
         $this->fields = array_replace_recursive($this->fields, $fields);
     }
 
-    final public function setPath($layout_path)
+    final public function setPath($layoutPath)
     {
         if ($this->validated)
             throw new \Exception('Cannot modify layout after validation.');
 
-        $layout_path_array = explode(':', $layout_path);
-        if (count($layout_path_array) !== 2)
-            throw new \Exception('Wrong layout path format: ' . $layout_path);
+        $layoutPath_array = explode(':', $layoutPath);
+        if (count($layoutPath_array) !== 2)
+            throw new \Exception('Wrong layout path format: ' . $layoutPath);
 
-        $this->filePath = Package::Path($layout_path_array[0],
-                'layouts/' . $layout_path_array[1] . '.php');
+        $this->filePath = Package::Path($layoutPath_array[0],
+                'layouts/' . $layoutPath_array[1] . '.php');
         if ($this->filePath === null)
-            throw new \Exception("Layout path `{$layout_path}` does not exist.");
+            throw new \Exception("Layout path `{$layoutPath}` does not exist.");
     }
 
     final public function validate($fields)
