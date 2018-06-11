@@ -83,7 +83,7 @@ class Uri
 
 		$lang_name = $lang['name'];
 
-		$page_uri = $page->getUri($uri_args, $lang_name);
+		$page_uri = $page->getAlias($uri_args, $lang_name);
 
 		return Uri::Base($path_only) . $page_uri;
 	}

@@ -44,7 +44,7 @@ class Page
         return $this->name;
     }
 
-    public function getUri($args = [], $lang_name = '')
+    public function getAlias($args = [], $lang_name = '')
     {
         $lang = Langs::Get($lang_name);
         if ($lang === null)
@@ -96,6 +96,11 @@ class Page
             throw new \Exception("Uri arg `{$arg_name}` does not exist.");
 
         return $uri;
+    }
+
+    public function getUri($uriArgs = null, $langName = '', $pathOnly = true)
+    {
+        return Uri::Page($this->name, $uriArgs, $langName, $pathOnly);
     }
 
 }

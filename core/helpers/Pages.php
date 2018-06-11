@@ -7,18 +7,25 @@ class Pages
 
 	static private $Instance = null;
 
-	static public function Get($page_name = '', $lang_name = '')
+	static public function Get($pageName = '', $langName = '')
 	{
-		$lang_name = Langs::Get($lang_name)['name'];
+		$langName = Langs::Get($langName)['name'];
 
-		if ($page_name === '')
-			$page_name = self::$Instance->currentPageName;
+		if ($pageName === '')
+			$pageName = self::$Instance->currentPageName;
 
-		if (!isset(self::$Instance->pages[$page_name]))
+		if (!isset(self::$Instance->pages[$pageName]))
 			return null;
 
-		return self::$Instance->pages[$page_name];
-	}
+		return self::$Instance->pages[$pageName];
+    }
+    
+    static public function GetAll($langName = '')
+    {
+        $langName = Langs::Get($langName)['name'];
+
+        return self::$Instance->pages;
+    }
 
 	static public function GetName()
 	{
@@ -71,70 +78,70 @@ class Pages
 		return new SitePage($this, $name);
 	}
 
-	public function addPageAlias($lang_name, $page_name, $uri)
+	public function addPageAlias($langName, $pageName, $uri)
 	{
-		$lang = $this->langs->getLang($lang_name);
+		$lang = $this->langs->getLang($langName);
 		if ($lang === null)
-			throw new \Exception("Language `{$lang_name}` does not exist.");
-		$lang_name = $lang['name'];
+			throw new \Exception("Language `{$langName}` does not exist.");
+		$langName = $lang['name'];
 
 		$page_alias = new PageAlias($uri);
 
-		$this->pagesAliases[$page_name][$lang['name']] = $page_alias;
+		$this->pagesAliases[$pageName][$lang['name']] = $page_alias;
 	}
 
 	private function parseUri(Uri $uri, $args_offset)
 	{
 		$lang = Langs::Get();
-		$lang_name = $lang['name'];
+		$langName = $lang['name'];
 
 		$args = $uri->getArgs();
 		$args = array_splice($args, $args_offset);
 
-		foreach ($this->pagesAliases as $page_name => $page_aliases) {
-			if (!isset($page_aliases[$lang_name]))
+		foreach ($this->pagesAliases as $pageName => $page_aliases) {
+			if (!isset($page_aliases[$langName]))
 				continue;
 
-			$alias = $page_aliases[$lang_name];
+			$alias = $page_aliases[$langName];
 
 			$uri_args = $alias->checkUriArgs($args);
 			if ($uri_args === null)
 				continue;
 
-			$page = $this->pages[$page_name];
+			$page = $this->pages[$pageName];
 			new Args($page->getArgs(), $uri_args);
 
-			$this->currentPageName = $page_name;
+			$this->currentPageName = $pageName;
 
 			return;
 		}
 
 		header('HTTP/1.0 404 Not Found');
 
-		if (isset($this->notFoundPages[$lang_name])) {
-			$this->currentPageName = $this->notFoundPageNames[$lang_name];
+		if (isset($this->notFoundPages[$langName])) {
+			$this->currentPageName = $this->notFoundPageNames[$langName];
 			return;
 		}
 
 		throw new \Exception('Page not found.');
 	}
 
-	public function setErrorPage($page_name, $lang_name)
+	public function setErrorPage($pageName, $langName)
 	{
-		if (!isset($this->pages[$page_name]))
-			throw new \Exception("Page `{$page_name}` does not exist.");
+		if (!isset($this->pages[$pageName]))
+			throw new \Exception("Page `{$pageName}` does not exist.");
 
-		$lang = $this->langs->getLang($lang_name);
-		$this->errorPageNames[$lang['name']] = $page_name;
+		$lang = $this->langs->getLang($langName);
+		$this->errorPageNames[$lang['name']] = $pageName;
 	}
 
-	public function setNotFoundPage($page_name, $lang_name)
+	public function setNotFoundPage($pageName, $langName)
 	{
-		if (!isset($this->pages[$page_name]))
-			throw new \Exception("Page `{$page_name}` does not exist.");
+		if (!isset($this->pages[$pageName]))
+			throw new \Exception("Page `{$pageName}` does not exist.");
 
-		$lang = $this->langs->getLang($lang_name);
-		$this->notFoundPageNames[$lang['name']] = $page_name;
+		$lang = $this->langs->getLang($langName);
+		$this->notFoundPageNames[$lang['name']] = $pageName;
 	}
 
 	private function requireSitePath($site_path)
