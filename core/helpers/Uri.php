@@ -104,7 +104,20 @@ class Uri
 			return self::$Instance->uri;
 
 		return self::GetDomain() . self::$Instance->uri;
-	}
+    }
+    
+    static public function Query($getArgs)
+    {
+        $query = '';
+
+        $first = true;
+        foreach ($getArgs as $argName => $argValue) {
+            $query .= ($first ? '?' : '&') . $argName . '=' . urlencode($argValue);
+            $first = false;
+        }
+
+        return $query;
+    }
 
 
 	private $base;
