@@ -8,6 +8,7 @@ abstract class Module
 	private $outputs = [];
 	private $initializations = [];
 
+    private $preDisplayed = false;
 	private $preInitialized = false;
 	private $postInitialized = false;
 
@@ -16,7 +17,16 @@ abstract class Module
 
 	}
 
-	final public function preInitialize(\E\Site $site)
+    final public function preDisplay(Site $site)
+    {
+        if (!$this->preDisplayed) {
+			$this->_preDisplay($site);
+
+			$this->preDisplayed = true;
+		}
+    }
+
+	final public function preInitialize(Site $site)
 	{
 		if (!$this->preInitialized) {
 			$this->_preInitialize($site);
@@ -25,7 +35,7 @@ abstract class Module
 		}
 	}
 
-	final public function postInitialize(\E\Site $site)
+	final public function postInitialize(Site $site)
 	{
 		if (!$this->postInitialized) {
 			$this->_postInitialize($site);
@@ -56,18 +66,29 @@ abstract class Module
 			throw new \Exception('Post initialization required.');
 	}
 
+    public function requireBeforePreDisplay()
+	{
+		if ($this->preDisplayed)
+			throw new \Exception('Can`t execute after `preDisplayed`.');
+	}
+
 	public function requirePreInitialize()
 	{
 		if (!$this->preInitialized)
 			throw new \Exception('Pre initialization required.');
 	}
 
-	protected function _preInitialize(\E\Site $site)
+    protected function _preDisplay(Site $site)
+    {
+
+    }
+
+	protected function _preInitialize(Site $site)
 	{
 
 	}
 
-	protected function _postInitialize(\E\Site $site)
+	protected function _postInitialize(Site $site)
 	{
 
 	}

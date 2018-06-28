@@ -43,7 +43,13 @@ class Modules
 		$modules_length = count($this->modules_Ordered);
 		for ($i = $modules_length - 1; $i >= 0; $i--)
 			$this->modules_Ordered[$i]->postInitialize($site);
-	}
+    }
+    
+    public function preDisplay(Site $site)
+    {
+        foreach ($this->modules_Ordered as $module)
+			$module->preDisplay($site);
+    }
 
 	public function preInitialize(Site $site)
 	{

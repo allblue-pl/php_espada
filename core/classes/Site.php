@@ -75,7 +75,9 @@ class Site implements ILayout
 			throw new \Exception('Parent `_preDisplay` not called.');
 
 		if ($this->rootLayout === null)
-			throw new \Exception('Root layout not set.');
+            throw new \Exception('Root layout not set.');
+
+        $this->siteModules->preDisplay($this);
 
 		foreach ($this->holders as $holder_name => $layouts) {
 			foreach ($layouts as $l) {

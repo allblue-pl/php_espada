@@ -59,41 +59,41 @@ class Uri
 		return URI_MEDIA . $package_name . '/' . $file_path;
 	}
 
-	static public function Page($page_name = null, $uri_args = null,
-			$lang_name = '', $path_only = true)
+	static public function Page($pageName = null, $uriArgs = null,
+			$langName = '', $path_only = true)
 	{
-		if ($page_name === null) {
-			$page_name = Pages::Get()->getName();
+		if ($pageName === null) {
+			$pageName = Pages::Get()->getName();
 
-			if ($uri_args === null)
-				$uri_args = Args::Uri_All();
+			if ($uriArgs === null)
+				$uriArgs = Args::Uri_All();
 		}
 
-		if ($uri_args === null)
-			$uri_args = [];
+		if ($uriArgs === null)
+			$uriArgs = [];
 
-		$page = Pages::Get($page_name);
+		$page = Pages::Get($pageName);
 
 		if ($page === null)
-			throw new \Exception("Page `{$page_name}` does not exist.");
+			throw new \Exception("Page `{$pageName}` does not exist.");
 
-		$lang = Langs::Get($lang_name);
+		$lang = Langs::Get($langName);
 		if ($lang === null)
-			throw new \Exception("Lang `{$lang_name}` does not exist.");
+			throw new \Exception("Lang `{$langName}` does not exist.");
 
-		$lang_name = $lang['name'];
+		$langName = $lang['name'];
 
-		$page_uri = $page->getAlias($uri_args, $lang_name);
+		$pageUri = $page->getAlias($uriArgs, $langName);
 
-		return Uri::Base($path_only) . $page_uri;
+		return Uri::Base($path_only) . $pageUri;
 	}
 
-	static public function Pages($page_names)
+	static public function Pages($pageNames)
 	{
 		$uris = [];
 
-		foreach ($page_names as $key => $page_name)
-			$uris[$key] = self::Page($page_name);
+		foreach ($pageNames as $key => $pageName)
+			$uris[$key] = self::Page($pageName);
 
 		return $uris;
 	}
