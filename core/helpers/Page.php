@@ -56,26 +56,26 @@ class Page
 
         $uri = '';
 
-        $alias_args = $this->aliases[$langName]->getArgs();
-        foreach ($alias_args as $alias_arg) {
-            if ($alias_arg['type'] === 'text') {
-                $uri .= $alias_arg['value'] . '/';
+        $aliasParts = $this->aliases[$langName]->getParts();
+        foreach ($aliasParts as $aliasPart) {
+            if ($aliasPart['type'] === 'text') {
+                $uri .= $aliasPart['value'] . '/';
                 continue;
             }
 
-            if ($alias_arg['type'] === 'arg') {
-                if (!array_key_exists($alias_arg['name'], $args)) {
+            if ($aliasPart['type'] === 'arg') {
+                if (!array_key_exists($aliasPart['name'], $args)) {
                     print_r($args);
                     throw new \Exception(
-                            "Uri arg `{$alias_arg['name']}` not set.");
+                            "Uri arg `{$aliasPart['name']}` not set.");
                 }
 
-                $uri .= $args[$alias_arg['name']] . '/';
-                unset($args[$alias_arg['name']]);
+                $uri .= $args[$aliasPart['name']] . '/';
+                unset($args[$aliasPart['name']]);
                 continue;
             }
 
-            // if ($alias_arg['type'] === 'ext') {
+            // if ($aliasPart['type'] === 'ext') {
             //     if (array_key_exists('_extra', $args)) {
             //         foreach ($args['_extra'] as $uri_part)
             //             $uri .= $uri_part . '/';
@@ -108,7 +108,14 @@ class Page
         if (!array_key_exists($langName, $this->aliases))
             throw new \Exception("Page doesn't have `{$langName}` alias.");
 
-        return $this->aliases[$langName]->getArgs();
+        $parts = $this->aliases[$langName]->getParts();
+        $args = [];
+        foreach ($parts as $part) {
+            if ($part['type'] !== 'text')
+                $args[] = $part;
+        }
+
+        return $args;
     }
 
     public function getUri($uriArgs = null, $langName = '', $pathOnly = true)

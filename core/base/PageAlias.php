@@ -59,7 +59,7 @@ class PageAlias
         return $uri_args;
     }
 
-    public function getArgs()
+    public function getParts()
     {
         return $this->args;
     }
