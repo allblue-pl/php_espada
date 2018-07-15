@@ -24,6 +24,7 @@ class Site implements ILayout
 		$this->siteModules = new Modules();
 	}
 
+
 	final public function __get($name)
 	{
 		if ($name === 'modules' || $name === 'm')
@@ -31,7 +32,8 @@ class Site implements ILayout
 
 		throw new \Exception("Site property `{$name}` does not exit.");
 		return null;
-	}
+    }
+
 
 	final public function addL($holder_name, Layout $layout)
 	{

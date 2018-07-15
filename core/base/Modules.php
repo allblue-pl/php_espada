@@ -20,7 +20,13 @@ class Modules
 			throw new \Exception("Module `{$name}` does not exist.");
 
 		return $this->modules[$name];
-	}
+    }
+    
+    public function __set($name, $value)
+    {
+        $this->add($name, $value);
+    }
+
 
 	public function add($module_name, Module $module)
 	{
