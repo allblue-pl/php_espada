@@ -86,7 +86,29 @@ class Uri
 		$pageUri = $page->getAlias($uriArgs, $langName);
 
 		return Uri::Base($path_only) . $pageUri;
-	}
+    }
+    
+    static public function Page_Raw($pageName = null, $langName = '', 
+            $path_only = true)
+    {
+        if ($pageName === null)
+			$pageName = Pages::Get()->getName();
+
+		$page = Pages::Get($pageName);
+
+		if ($page === null)
+			throw new \Exception("Page `{$pageName}` does not exist.");
+
+		$lang = Langs::Get($langName);
+		if ($lang === null)
+			throw new \Exception("Lang `{$langName}` does not exist.");
+
+		$langName = $lang['name'];
+
+		$pageUri = $page->getAlias_Raw($langName);
+
+		return Uri::Base($path_only) . $pageUri;
+    }
 
 	static public function Pages($pageNames)
 	{
