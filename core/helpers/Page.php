@@ -52,7 +52,7 @@ class Page
         $langName = $lang['name'];
 
         if (!array_key_exists($langName, $this->aliases))
-            throw new \Exception("Page doesn't have `{$langName}` alias.");
+            throw new \Exception("Page '{$this->name}' doesn't have '{$langName}' alias.");
 
         $uri = '';
 
@@ -98,7 +98,7 @@ class Page
         return $uri;
     }
 
-    public function getAlias_Raw($args = [], $langName = '')
+    public function getAlias_Raw($langName = '')
     {
         $lang = Langs::Get($langName);
         if ($lang === null)
@@ -106,7 +106,7 @@ class Page
         $langName = $lang['name'];
 
         if (!array_key_exists($langName, $this->aliases))
-            throw new \Exception("Page doesn't have `{$langName}` alias.");
+            throw new \Exception("Page '{$this->name}' doesn't have '{$langName}' alias.");
 
         $uri = '';
 
@@ -140,7 +140,7 @@ class Page
         $langName = $lang['name'];
 
         if (!array_key_exists($langName, $this->aliases))
-            throw new \Exception("Page doesn't have `{$langName}` alias.");
+            throw new \Exception("Page '{$this->name}' doesn't have '{$langName}' alias.");
 
         $parts = $this->aliases[$langName]->getParts();
         $args = [];
@@ -160,6 +160,11 @@ class Page
     public function getUri_Raw($langName = '', $pathOnly = true)
     {
         return Uri::Page_Raw($this->name, $langName, $pathOnly);
+    }
+
+    public function hasAlias($langName)
+    {   
+        return array_key_exists($langName, $this->aliases);
     }
 
 }

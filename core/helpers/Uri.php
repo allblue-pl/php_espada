@@ -85,7 +85,11 @@ class Uri
 
 		$pageUri = $page->getAlias($uriArgs, $langName);
 
-		return Uri::Base($path_only) . $pageUri;
+        $uri = Uri::Base($path_only);
+        if ($lang['alias'] !== '')
+            $uri .= $lang['alias'] . '/';
+
+		return $uri . $pageUri;
     }
     
     static public function Page_Raw($pageName = null, $langName = '', 
@@ -103,11 +107,15 @@ class Uri
 		if ($lang === null)
 			throw new \Exception("Lang `{$langName}` does not exist.");
 
-		$langName = $lang['name'];
+        $langName = $lang['name'];
 
 		$pageUri = $page->getAlias_Raw($langName);
 
-		return Uri::Base($path_only) . $pageUri;
+        $uri = Uri::Base($path_only);
+        if ($lang['alias'] !== '')
+            $uri .= $lang['alias'] . '/';
+
+		return $uri . $pageUri;
     }
 
 	static public function Pages($pageNames)

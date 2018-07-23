@@ -87,7 +87,7 @@ class Pages
 
 		$page_alias = new PageAlias($uri);
 
-		$this->pagesAliases[$pageName][$lang['name']] = $page_alias;
+        $this->pagesAliases[$pageName][$lang['name']] = $page_alias;
 	}
 
 	private function parseUri(Uri $uri, $args_offset)

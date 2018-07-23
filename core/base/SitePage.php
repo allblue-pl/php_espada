@@ -26,7 +26,12 @@ class SitePage
             $uri = $arg2;
         }
 
-        $this->pages->addPageAlias($langName, $this->name, $uri);
+        if ($langName === '*') {
+            $langs = Langs::GetAll();
+            foreach ($langs as $lang)
+                $this->pages->addPageAlias($lang['name'], $this->name, $uri);
+        } else
+            $this->pages->addPageAlias($langName, $this->name, $uri);
 
         return $this;
     }

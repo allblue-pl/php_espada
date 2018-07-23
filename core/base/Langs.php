@@ -12,7 +12,12 @@ class Langs
 			$lang_name = self::$Instance->currentLangName;
 
 		return self::$Instance->langs[$lang_name];
-	}
+    }
+    
+    static public function GetAll()
+    {
+        return self::$Instance->langs;
+    }
 
 
 	private $langs = [];
