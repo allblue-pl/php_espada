@@ -8,10 +8,7 @@ class Langs
 
 	static public function Get($lang_name = '')
 	{
-		if ($lang_name === '')
-			$lang_name = self::$Instance->currentLangName;
-
-		return self::$Instance->langs[$lang_name];
+		return self::$Instance->getLang($lang_name);
     }
     
     static public function GetAll()
