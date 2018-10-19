@@ -7,22 +7,22 @@ class Uri
 
 	static private $Instance = null;
 
-	static public function Base($path_only = true)
+	static public function Base($pathOnly = true)
 	{
-		if ($path_only)
+		if ($pathOnly)
 			return self::$Instance->base;
 
 		return Uri::Domain() . self::$Instance->base;
 	}
 
-	static public function Current($path_only = true)
+	static public function Current($pathOnly = true)
 	{
 		if (self::$Instance === null) {
 			throw new \Exception('Cannot get current uri' .
 					' before initialization.');
 		}
 
-		if ($path_only)
+		if ($pathOnly)
 			return self::$Instance->uri;
 
 		return Uri::Domain() . self::$Instance->uri;
@@ -36,13 +36,13 @@ class Uri
 		return $_SERVER['HTTP_HOST'];
 	}
 
-	static public function File($path, $path_only = true)
+	static public function File($path, $pathOnly = true)
 	{
 		$file_uri = Package::Uri_FromPath($path, 'front', '');
 		if ($file_uri === null)
 			Notice::Add("Cannot find front file: {$path}.");
 
-		if ($path_only)
+		if ($pathOnly)
 			return $file_uri;
 
 		return self::Domain() . $file_uri;
@@ -60,7 +60,7 @@ class Uri
 	}
 
 	static public function Page($pageName = null, $uriArgs = null,
-			$langName = '', $path_only = true)
+			$langName = '', $pathOnly = true, $includeBase = true)
 	{
 		if ($pageName === null) {
 			$pageName = Pages::Get()->getName();
@@ -85,7 +85,9 @@ class Uri
 
 		$pageUri = $page->getAlias($uriArgs, $langName);
 
-        $uri = Uri::Base($path_only);
+        $uri = '';
+        if ($includeBase)
+            $uri .= Uri::Base($pathOnly);
         if ($lang['alias'] !== '')
             $uri .= $lang['alias'] . '/';
 
@@ -93,7 +95,7 @@ class Uri
     }
     
     static public function Page_Raw($pageName = null, $langName = '', 
-            $path_only = true)
+            $pathOnly = true, $includeBase = true)
     {
         if ($pageName === null)
 			$pageName = Pages::Get()->getName();
@@ -111,7 +113,9 @@ class Uri
 
 		$pageUri = $page->getAlias_Raw($langName);
 
-        $uri = Uri::Base($path_only);
+        $uri = '';
+        if ($includeBase)
+            $uri .= Uri::Base($pathOnly);
         if ($lang['alias'] !== '')
             $uri .= $lang['alias'] . '/';
 
@@ -128,9 +132,9 @@ class Uri
 		return $uris;
 	}
 
-	static public function Site($path_only = true)
+	static public function Site($pathOnly = true)
 	{
-		if ($path_only)
+		if ($pathOnly)
 			return self::$Instance->uri;
 
 		return self::GetDomain() . self::$Instance->uri;
