@@ -87,7 +87,7 @@ class Site implements ILayout
 			}
 		}
 
-		$this->rootLayout->display();
+		$this->rootLayout->display($this);
 	}
 
 	final public function getRootL()

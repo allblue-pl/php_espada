@@ -58,13 +58,15 @@ class Layout implements ILayout
         return $layout;
     }
 
-    final public function display()
+    final public function display(Site $site)
     {
-        $fields = $this->_getFields();
+        $this->_preDisplay($site);
+
+        $fields = $this->getFields();
 
         $this->validate($fields);
 
-        $holders = new Holders($this->holders, $this->holders_Displayed);
+        $holders = new Holders($site, $this->holders, $this->holders_Displayed);
 
         $fields_array = is_callable($this->fields) ? $fields() : $fields;
 
@@ -128,10 +130,12 @@ class Layout implements ILayout
         $this->validated = true;
     }
 
-    protected function _getFields()
+
+    protected function _preDisplay(Site $site)
     {
-        return $this->fields;
+
     }
+
 
     private function validateHolders()
     {
