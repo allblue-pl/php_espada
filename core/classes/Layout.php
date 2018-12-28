@@ -9,6 +9,20 @@ class Layout implements ILayout
         return new Layout($layoutPath, $fields);
     }
 
+    static public function Exists($layoutPath)
+    {
+        $layoutPath_array = explode(':', $layoutPath);
+        if (count($layoutPath_array) !== 2)
+            return false;
+
+        $filePath = Package::Path($layoutPath_array[0],
+                'layouts/' . $layoutPath_array[1] . '.php');
+        if ($filePath === null)
+            return false;
+
+        return true;
+    }
+
     static private function RequireFile($eFilePath, Holders $eHolders,
             Fields $eFields)
     {
