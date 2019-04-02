@@ -128,17 +128,16 @@ class File
 	{
 		set_time_limit(0);
 
-		if ($file_name === null)
-			$content_mime_type = \E\File::GetContentMimeType($file_path);
-		else
-			$content_mime_type = \E\File::GetContentMimeType($file_name);
+        if ($file_name === null)
+            $file_name = basename($file_path);
+
+        $content_mime_type = \E\File::GetContentMimeType($file_name);
 
 		header('Content-Description: File Transfer');
 		header('Content-Type: '.$content_mime_type);
 		header('Pragma: public');
 		header('Content-Length: ' . filesize($file_path));
-		if ($file_name !== null)
-			header('Content-Disposition: attachment; filename="' . $file_name . '"');
+        header('Content-Disposition: attachment; filename="' . $file_name . '"');
 
 		if (ob_get_contents())
 			ob_clean();
