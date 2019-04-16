@@ -108,8 +108,6 @@ class File
 
 		$tmp_file_path = tempnam(PATH_TMP, 'img');
 
-        imagetruecolortopalette($image, false, 255);
-
 		if ($ext === 'png')
 			imagepng($image, $tmp_file_path);
 		else if ($ext === 'jpg' || $ext === 'jpeg')
