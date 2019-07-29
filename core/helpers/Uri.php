@@ -169,7 +169,7 @@ class Uri
 		$uri = urldecode($uri);
 		$this->uri = $uri;
 
-		$this->base = dirname($_SERVER['PHP_SELF']);
+        $this->base = SITE_BASE; // dirname($_SERVER['PHP_SELF']);
 
 		if ($this->base === '' || $this->base === '\\')
 			$this->base = '/';
