@@ -165,17 +165,20 @@ class Package
 
     static private function GetPackagePaths()
     {
-        if (self::$PackagePaths === null) {
-            self::$PackagePaths = [];
-            $packageNames = scandir(PATH_ESITE . '/packages');
-            foreach ($packageNames as $packageName) {
-                if ($packageName === '.' || $packageName === '..')
-                    continue;
+        if (self::$PackagePaths !== null)
+            return self::$PackagePaths;
 
-                $packagePath = PATH_ESITE . '/packages/' . $packageName;
-                if (is_dir($packagePath))
-                    self::$PackagePaths[$packageName] = $packagePath;
-            }
+        if (!defined('EPACKAGES'))
+            throw new \Exception("'EPACKAGES' not defined.");
+
+        self::$PackagePaths = [];
+        $packageNames = explode(',', str_replace(' ', '', EPACKAGES));
+        foreach ($packageNames as $packageName) {
+            $packagePath = PATH_ESITE . '/packages/' . $packageName;
+            if (!is_dir($packagePath))
+                throw new \Exception("Package '${packageName}' does not exist.");
+
+            self::$PackagePaths[] = $packagePath;
         }
         
         return self::$PackagePaths;
