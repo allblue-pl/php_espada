@@ -25,7 +25,7 @@ class Package
 
         foreach (self::GetPackagePaths() as $packagePath) {
             // echo 'Details: ' . $packagePath . '/' . $filePath;
-            if (File::Exists($packagePath . '/' . $filePath)) {
+            if (File::Exists($packagePath['path'] . '/' . $filePath)) {
                 $file_details = array(
                     'package_path' => PATH_ESITE . '/packages/' . $package,
                     'package_uri' => URI_ESITE . 'esite/packages/' . $package,
@@ -77,8 +77,8 @@ class Package
 
         foreach (self::GetPackagePaths() as $packagePath) {
             // echo 'Path: ' . $packagePath . '/' . $filePath;
-            if (File::Exists($packagePath . '/' . $filePath))
-                return $packagePath . '/' . $filePath;
+            if (File::Exists($packagePath['path'] . '/' . $filePath))
+                return $packagePath['path'] . '/' . $filePath;
         }
 
         return null;
@@ -119,9 +119,9 @@ class Package
             }
         }
 
-        foreach (self::GetPackagePaths() as $packageName => $packagePath) {
-            if (File::Exists($packagePath . '/' . $filePath))
-                return URI_ESITE . 'packages/' .  $packageName . '/' . $filePath;
+        foreach (self::GetPackagePaths() as $packagePath) {
+            if (File::Exists($packagePath['path'] . '/' . $filePath))
+                return URI_ESITE . 'packages/' .  $packagePath['name'] . '/' . $filePath;
         }
 
         return null;
@@ -178,7 +178,10 @@ class Package
             if (!is_dir($packagePath))
                 throw new \Exception("Package '${packageName}' does not exist.");
 
-            self::$PackagePaths[] = $packagePath;
+            self::$PackagePaths[] = [
+                'name' => $packageName,
+                'path' => $packagePath,
+            ];
         }
         
         return self::$PackagePaths;
