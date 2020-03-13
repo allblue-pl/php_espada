@@ -81,10 +81,7 @@ class File
 
 	static public function NotFound($error_message = null)
 	{
-		if ($error_message !== null)
-            echo $error_message;
-
-		\Espada::NotFound();
+        \Espada::NotFound($error_message === null ? '' : $error_message);
 	}
 
 	static public function Output($file_name, $content, $charset ='utf-8')
