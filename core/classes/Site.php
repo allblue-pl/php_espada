@@ -61,7 +61,7 @@ class Site implements ILayout
 
 	final public function addModule($module_name, Module $module)
 	{
-		$this->addL($module_name, $module);
+		$this->addM($module_name, $module);
 	}
 
 	final public function deinitialize()
