@@ -150,13 +150,12 @@ class File
 
 		if (array_key_exists($ext, self::$MIME_TYPES)) {
 			return self::$MIME_TYPES[$ext];
-		} elseif (function_exists('finfo_open')) {
-			$finfo = finfo_open(FILEINFO_MIME);
-			$mimetype = finfo_file($finfo, $filename);
-			finfo_close($finfo);
-			return $mimetype;
-		}
-		else {
+		// } else if (function_exists('finfo_open')) {
+		// 	$finfo = finfo_open(FILEINFO_MIME);
+		// 	$mimetype = finfo_file($finfo, $filename);
+		// 	finfo_close($finfo);
+		// 	return $mimetype;
+		} else {
 			return 'application/octet-stream';
 		}
 	}
