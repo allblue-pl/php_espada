@@ -13,6 +13,11 @@ class Langs
 
 		return self::$Instance->getLang($lang_name);
     }
+
+    static public function GetName()
+    {
+        return self::Get()['name'];
+    }
     
     static public function GetAll()
     {
