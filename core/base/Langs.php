@@ -13,15 +13,25 @@ class Langs
 
 		return self::$Instance->getLang($lang_name);
     }
-
-    static public function GetName()
-    {
-        return self::Get()['name'];
-    }
     
     static public function GetAll()
     {
         return self::$Instance->langs;
+    }
+
+    static public function GetAllNames()
+    {
+        $langNames = [];
+        foreach (self::GetAll() as $lang) {
+            $langNames[] = $lang['name'];
+        }
+
+        return $langNames;
+    }
+
+    static public function GetName()
+    {
+        return self::Get()['name'];
     }
 
 
@@ -39,10 +49,11 @@ class Langs
 
 	public function add($lang_name, $lang_alias, $lang_code)
 	{
-		if (isset($this->langs[$lang_name]))
+        $lang = $this->getLang($lang_name);
+		if ($lang !== null)
 			throw new \Exception("Lang `{$lang_name}` already exists.");
 
-		$this->langs[$lang_name] = [
+		$this->langs[] = [
 			'name' => $lang_name,
 			'alias' => $lang_alias,
 			'code' => $lang_code
@@ -54,10 +65,12 @@ class Langs
 	public function getLang($lang_name = '')
 	{
 		if ($lang_name === '')
-			return $this->langs[$this->defaultLangName];
+			$lang_name = $this->defaultLangName;
 
-		if (isset($this->langs[$lang_name]))
-			return $this->langs[$lang_name];
+        foreach (self::GetAll() as $lang) {
+            if ($lang['name'] === $lang_name)
+                return $lang;
+        }
 
 		return null;
 	}
@@ -73,7 +86,9 @@ class Langs
 	public function parseUri(\E\Uri $uri)
 	{
 		$empty_alias_lang_name = null;
-		foreach ($this->langs as $lang_name => $lang) {
+		foreach ($this->langs as $lang) {
+            $lang_name = $lang['name'];
+
 			if ($lang['alias'] === '')
 				$empty_alias_lang_name = $lang_name;
 

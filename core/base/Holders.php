@@ -28,6 +28,11 @@ class Holders
         if ($this->holders_Displayed[$name])
             throw new \Exception("Holder '${name}' already exists.");
 
+        // if ($name === 'postHead') {
+        //     print_r($this->holders[$name]);
+        //     die;
+        // }
+
         foreach ($this->holders[$name] as $layout)
             $layout->display($this->site);
         $this->holders_Displayed[$name] = true;

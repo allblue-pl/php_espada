@@ -18,6 +18,8 @@ class Site implements ILayout
 	private $listeners_PreInitialize = [];
 	private $listeners_PostInitialize = [];
 
+    private $listeners_PreDisplay = [];
+
 
 	public function __construct()
 	{
@@ -81,6 +83,11 @@ class Site implements ILayout
 
         $this->siteModules->preDisplay($this);
 
+        // echo "tutaj?" . count($this->listeners_PreDisplay);
+        // die;
+        foreach ($this->listeners_PreDisplay as $listener)
+            $listener($this);
+
 		foreach ($this->holders as $holder_name => $layouts) {
 			foreach ($layouts as $l) {
 				$this->rootLayout->addL($holder_name, $l);
@@ -90,10 +97,10 @@ class Site implements ILayout
 		$this->rootLayout->display($this);
 	}
 
-	final public function getRootL()
-	{
-		return $this->rootLayout;
-	}
+	// final public function getRootL()
+	// {
+	// 	return $this->rootLayout;
+	// }
 
 	final public function initialize()
 	{
@@ -112,8 +119,9 @@ class Site implements ILayout
 			throw new \Exception('Parent `_initialize` not called.');
 
 		/* Post Initialize */
-		for ($i = count($this->listeners_PostInitialize) - 1; $i >=0; $i--)
-			$this->listeners_PostInitialize[$i]($this);
+		for ($i = count($this->listeners_PostInitialize) - 1; $i >=0; $i--) {
+            $this->listeners_PostInitialize[$i]($this);
+        }
 		$this->_postInitialize();
 
 		$this->siteModules->postInitialize($this);
@@ -136,11 +144,28 @@ class Site implements ILayout
 
 	final public function onPostInitialize(\Closure $listener)
 	{
+        if ($this->initialized) {
+            throw new \Exception("Cannot add 'PostInitialize' listener after initialization.");
+        }
+
 		$this->listeners_PostInitialize[] = $listener;
+	}
+
+    final public function onPreDisplay(\Closure $listener)
+	{
+        if ($this->preDisplayed) {
+            throw new \Exception("Cannot add 'PreDisplay' listener after displaying.");
+        }
+
+		$this->listeners_PreDisplay[] = $listener;
 	}
 
 	final public function onPreInitialize(\Closure $listener)
 	{
+        if ($this->initialized) {
+            throw new \Exception("Cannot add 'PreInitialize' listener after initialization.");
+        }
+
 		$this->listeners_PreInitialize[] = $listener;
 	}
 
