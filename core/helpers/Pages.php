@@ -24,7 +24,14 @@ class Pages
     {
         $langName = Langs::Get($langName)['name'];
 
-        return self::$Instance->pages;
+        $pages = [];
+        foreach (self::$Instance->pages as $page) {
+            if (!$page->hasAlias($langName))
+                continue;
+            $pages[] = $page;
+        }
+
+        return $pages;
     }
 
 	static public function GetName()
