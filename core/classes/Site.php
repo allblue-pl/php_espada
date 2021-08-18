@@ -74,17 +74,15 @@ class Site implements ILayout
 
 	final public function display()
 	{
-		$this->_preDisplay();
-		if (!$this->preDisplayed)
-			throw new \Exception('Parent `_preDisplay` not called.');
-
 		if ($this->rootLayout === null)
             throw new \Exception('Root layout not set.');
 
+        $this->_preDisplay();
+        if (!$this->preDisplayed)
+            throw new \Exception('Parent `_preDisplay` not called.');
+
         $this->siteModules->preDisplay($this);
 
-        // echo "tutaj?" . count($this->listeners_PreDisplay);
-        // die;
         foreach ($this->listeners_PreDisplay as $listener)
             $listener($this);
 
