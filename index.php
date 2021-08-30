@@ -7,7 +7,6 @@ ob_end_clean();
 if (!defined('EDEBUG'))
 	define('EDEBUG', false);
 
-define('PATH_DATA', PATH_ESITE . '/data');
 define('PATH_OVERWRITES', PATH_ESITE . '/overwrites');
 define('PATH_SITE', PATH_ESITE . '/site');
 
