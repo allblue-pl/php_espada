@@ -8,7 +8,7 @@ class Path
     static public function Data($package_name, $file_path)
 	{
         if (!file_exists(PATH_DATA))
-            mkdir(PATH_DATA);
+            mkdir(PATH_DATA, 0777, true);
 
 		$package_name = mb_strtolower($package_name);
 		$package_path = PATH_DATA . '/' . $package_name;
