@@ -77,6 +77,9 @@ class Pages
 		if (isset($this->pages[$name]))
 			throw new \Exception("Page `{$name}` already exists.");
 
+        if ($name === '')
+            throw new \Exception("Page name cannot be empty.");
+
 		$this->pageAliases[$name] = [];
 
 		$this->pages[$name] = new Page($name, $path, $args,
