@@ -38,7 +38,7 @@ class Path
 	static public function Media($package_name, $file_path)
 	{
         if (!file_exists(PATH_MEDIA))
-            mkdir(PATH_MEDIA);
+            mkdir(PATH_MEDIA, 0777, true);
 
 		$package_name = mb_strtolower($package_name);
 		$package_path = PATH_MEDIA . '/' . $package_name;
