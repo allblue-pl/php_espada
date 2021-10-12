@@ -132,12 +132,20 @@ class Uri
 		return $uris;
 	}
 
+    static public function Protocol()
+    {
+        if (mb_strpos(self::Domain(), 'https://'))
+                return 'https://';
+
+        return 'http://';
+    }
+
 	static public function Site($pathOnly = true)
 	{
 		if ($pathOnly)
 			return self::$Instance->uri;
 
-		return self::GetDomain() . self::$Instance->uri;
+		return self::Domain() . self::$Instance->uri;
     }
     
     static public function Query($getArgs)
