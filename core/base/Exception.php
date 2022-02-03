@@ -13,7 +13,7 @@ class Exception
 	}
 
 	static public function ErrorHandler($errno, $errstr, $errfile,
-			$errline, $errcontext)
+			$errline)
 	{
 		throw new \ErrorException($errstr, $errno, 0, $errfile, $errline);
 	}
