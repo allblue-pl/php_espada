@@ -80,7 +80,7 @@ class Pages
         if ($name === '')
             throw new \Exception("Page name cannot be empty.");
 
-		$this->pageAliases[$name] = [];
+		$this->pagesAliases[$name] = [];
 
 		$this->pages[$name] = new Page($name, $path, $args,
 				$this->pagesAliases[$name]);
