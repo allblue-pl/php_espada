@@ -12,6 +12,11 @@ class Exception
 		self::$OnErrorListeners[] = $exception_listener;
 	}
 
+    static public function ClearErrorListeners()
+    {
+        self::$OnErrorListeners = [];
+    }
+
 	static public function ErrorHandler($errno, $errstr, $errfile,
 			$errline)
 	{
