@@ -166,7 +166,7 @@ class Uri
 	private $args;
 	private $uri;
 
-	public function __construct($uri)
+	public function __construct($uri_Raw)
 	{
 		if (self::$Instance !== null)
 			throw new \Exception("Uri already created.");
@@ -174,8 +174,18 @@ class Uri
 		self::$Instance = $this;
 
 		/* Base */
-		$uri = urldecode($uri);
-		$this->uri = $uri;
+        $uri_Raw = urldecode($uri_Raw);
+        $uri = '';
+        $allowedChars = 'qwertyuiopasdfghjklzxcvbnm' . 
+                'QWERTYUIOPASDFGHJKLZXCVBNM' . 
+                '0123456789' .
+                '?/-_' . // url
+                '+='; // base64
+        for ($i = 0; $i < mb_strlen($uri_Raw); $i++) {
+            if (mb_strpos($allowedChars, $uri_Raw[$i]) > -1)
+                $uri .= (string)$uri_Raw[$i];
+        }
+        $this->uri = $uri;
 
         $this->base = SITE_BASE; // dirname($_SERVER['PHP_SELF']);
 

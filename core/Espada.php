@@ -223,7 +223,12 @@ class Espada
 			mkdir(PATH_TMP, 0700, true);
 
 		$e_uri = new \E\Uri($_SERVER['REQUEST_URI']);
-		$e_langs = new \E\Langs();
+		if ($e_uri->getUri() !== $_SERVER['REQUEST_URI']) {
+            header('Location: ' . $e_uri->getUri(), TRUE, 303);
+		    exit();
+        }
+
+        $e_langs = new \E\Langs();
 		$e_pages = new \E\Pages($e_langs, $e_uri);
 
 		/* Page Path */
