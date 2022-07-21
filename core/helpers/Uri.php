@@ -179,7 +179,7 @@ class Uri
         $allowedChars = 'qwertyuiopasdfghjklzxcvbnm' . 
                 'QWERTYUIOPASDFGHJKLZXCVBNM' . 
                 '0123456789' .
-                '?/-_' . // url
+                '.#?&;/-_' . // url
                 '+='; // base64
         for ($i = 0; $i < mb_strlen($uri_Raw); $i++) {
             if (mb_strpos($allowedChars, $uri_Raw[$i]) > -1)
@@ -219,5 +219,10 @@ class Uri
 	{
 		return count($this->args);
 	}
+
+    public function getUri()
+    {
+        return $this->uri;
+    }
 
 }
