@@ -52,6 +52,8 @@ class Exception
 				echo "\t" . '&nbsp;&nbsp;&nbsp; Unknown <br />';
 		}
 
+        echo "HERE?";
+
 		die();
 	}
 
