@@ -174,19 +174,7 @@ class Uri
 		self::$Instance = $this;
 
 		/* Base */
-        $uri_Raw = urldecode($uri_Raw);
-        $uri = '';
-        $allowedChars = 'qwertyuiopasdfghjklzxcvbnm' . 
-                'QWERTYUIOPASDFGHJKLZXCVBNM' . 
-                '0123456789' .
-                '.#?&;/-_' . // url
-                '+='; // base64
-        for ($i = 0; $i < mb_strlen($uri_Raw); $i++) {
-            if (mb_strpos($allowedChars, $uri_Raw[$i]) > -1)
-                $uri .= (string)$uri_Raw[$i];
-        }
-        $this->uri = $uri;
-
+        $uri = urldecode($uri_Raw);
         $this->base = SITE_BASE; // dirname($_SERVER['PHP_SELF']);
 
 		if ($this->base === '' || $this->base === '\\')
@@ -196,10 +184,18 @@ class Uri
 
 		/* Uri Args */
 		$uri = substr($uri, mb_strlen($this->base));
-		$uri = explode('?', $uri)[0];
-		$this->args = explode('/', $uri);
+        $uri_Arr = explode('?', $uri);
+        $query = count($uri_Arr) > 1 ? 
+                mb_substr($uri, mb_strlen($uri_Arr[0])) : '';
+
+        $uri = $uri_Arr[0];
+        $this->args = explode('/', $uri);
 		if ($this->args[count($this->args) - 1] === '')
 			array_pop($this->args);
+        for ($i = 0; $i < count($this->args); $i++)
+            $this->args[$i] = $this->parseArg($this->args[$i]);
+
+        $this->uri = $this->base . implode('/', $this->args) . $query;
 	}
 
 	public function getArg($index)
@@ -223,6 +219,22 @@ class Uri
     public function getUri()
     {
         return $this->uri;
+    }
+
+
+    private function parseArg($arg_Raw)
+    {
+        $arg = "";
+        $allowedChars = 'qwertyuiopasdfghjklzxcvbnm' . 
+                'QWERTYUIOPASDFGHJKLZXCVBNM' . 
+                '0123456789' .
+                '-_';
+        for ($i = 0; $i < mb_strlen($arg_Raw); $i++) {
+            if (mb_strpos($allowedChars, $arg_Raw[$i]) > -1)
+                $arg .= (string)$arg_Raw[$i];
+        }
+
+        return $arg;
     }
 
 }

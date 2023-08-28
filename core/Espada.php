@@ -223,7 +223,7 @@ class Espada
 			mkdir(PATH_TMP, 0700, true);
 
 		$e_uri = new \E\Uri($_SERVER['REQUEST_URI']);
-		if ($e_uri->getUri() !== $_SERVER['REQUEST_URI']) {
+		if ($e_uri->getUri() !== urldecode($_SERVER['REQUEST_URI'])) {
             header('Location: ' . $e_uri->getUri(), TRUE, 303);
 		    exit();
         }
