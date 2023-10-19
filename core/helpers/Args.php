@@ -109,7 +109,8 @@ class Args
 	}
 
 
-	private $pageUriArgs = null;
+    private $pageArgs = null;
+    private $uriArgs = null;
 
 	public function __construct($page_args, $uri_args)
 	{

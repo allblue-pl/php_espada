@@ -176,7 +176,7 @@ class Package
         foreach ($packageNames as $packageName) {
             $packagePath = PATH_ESITE . '/packages/' . $packageName;
             if (!is_dir($packagePath))
-                throw new \Exception("Package '${packageName}' does not exist.");
+                throw new \Exception("Package '{$packageName}' does not exist.");
 
             self::$PackagePaths[] = [
                 'name' => $packageName,
