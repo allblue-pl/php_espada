@@ -91,8 +91,7 @@ class Langs
 
 			if ($lang['alias'] === '')
 				$empty_alias_lang_name = $lang_name;
-
-			if ($uri->getArg(0) === $lang['alias']) {
+			else if ($uri->getArg(0) === $lang['alias']) {
 				$this->currentLangName = $lang_name;
 
 				return 1;
