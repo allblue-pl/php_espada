@@ -1,8 +1,7 @@
 <?php namespace E;
 defined('_ESPADA') or die(NO_ACCESS);
 
-class Fields // implements \Iterator {
-
+class Fields { // implements \Iterator
 	static public function _($fields = [])
 	{
 		return new Fields($fields);
