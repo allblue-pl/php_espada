@@ -2,8 +2,7 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 
-class File
-{
+class File {
 
 	static private $MIME_TYPES = array(
 

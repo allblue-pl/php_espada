@@ -2,8 +2,7 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 
-class Page
-{
+class Page {
 
     private $name = '';
     private $path = '';

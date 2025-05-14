@@ -1,8 +1,7 @@
 <?php namespace E;
 defined('_ESPADA') or die(NO_ACCESS);
 
-class SitePages
-{
+class SitePages {
 
     private $langs = null;
     private $pages = null;

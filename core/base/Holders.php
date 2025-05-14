@@ -2,8 +2,7 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 
-class Holders
-{
+class Holders {
 
     private $site = null;
     private $holders = [];

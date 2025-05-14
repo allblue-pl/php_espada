@@ -1,8 +1,7 @@
 <?php namespace E;
 defined('_ESPADA') or die(NO_ACCESS);
 
-class Layout implements ILayout
-{
+class Layout implements ILayout {
 
     static public function _($layoutPath, $fields = [])
     {

@@ -2,8 +2,7 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 
-class ErrorPage
-{
+class ErrorPage {
 
 	static private $Title = "Error";
 	static private $Message = "Internal Server Error";

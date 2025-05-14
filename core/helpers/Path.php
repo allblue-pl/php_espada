@@ -2,8 +2,7 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 
-class Path
-{
+class Path {
 
     static public function Data($package_name, $file_path)
 	{

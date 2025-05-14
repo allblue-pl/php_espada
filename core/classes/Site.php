@@ -2,8 +2,7 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 
-class Site implements ILayout
-{
+class Site implements ILayout {
 
 	private $preDisplayed = false;
 	private $preInitialized = false;

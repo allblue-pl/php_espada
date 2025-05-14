@@ -2,8 +2,7 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 
-abstract class Module
-{
+abstract class Module {
 
 	private $outputs = [];
 	private $initializations = [];

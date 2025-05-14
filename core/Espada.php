@@ -30,8 +30,7 @@ require(__DIR__."/helpers/Path.php");
 require(__DIR__."/helpers/Uri.php");
 
 
-class Espada
-{
+class Espada {
 
 	static private $Instance = null;
 	static private $Initialized = false;

@@ -2,8 +2,7 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 
-class SitePage
-{
+class SitePage {
 
     private $name = '';
     private $pages = null;

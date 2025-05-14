@@ -2,8 +2,7 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 
-class Package
-{
+class Package {
 
     static private $PackagePaths = null;
     static private $Overwrites = [];

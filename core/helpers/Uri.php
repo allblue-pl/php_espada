@@ -2,8 +2,7 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 
-class Uri
-{
+class Uri {
 
 	static private $Instance = null;
 

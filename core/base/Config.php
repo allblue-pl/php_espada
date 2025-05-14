@@ -2,8 +2,7 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 
-class Config
-{
+class Config {
 
     static public function IsType($type)
     {

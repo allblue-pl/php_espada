@@ -2,8 +2,7 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 
-class Exception
-{
+class Exception {
 
 	static private $OnErrorListeners = [];
 

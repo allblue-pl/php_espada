@@ -2,8 +2,7 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 
-class Notice
-{
+class Notice {
 
     static private $Fields = null;
     static private $Notices = [];

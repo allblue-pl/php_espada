@@ -2,8 +2,7 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 
-class Modules
-{
+class Modules {
 
 	private $modules = null;
 	private $modules_Ordered = null;
