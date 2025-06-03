@@ -21,8 +21,7 @@ class Modules {
 		return $this->modules[$name];
     }
     
-    public function __set($name, $value)
-    {
+    public function __set($name, $value) {
         $this->add($name, $value);
     }
 
@@ -50,8 +49,7 @@ class Modules {
 			$this->modules_Ordered[$i]->postInitialize($site);
     }
     
-    public function preDisplay(Site $site)
-    {
+    public function preDisplay(Site $site) {
         foreach ($this->modules_Ordered as $module)
 			$module->preDisplay($site);
     }

@@ -11,8 +11,7 @@ class Exception {
 		self::$OnErrorListeners[] = $exception_listener;
 	}
 
-    static public function ClearErrorListeners()
-    {
+    static public function ClearErrorListeners() {
         self::$OnErrorListeners = [];
     }
 

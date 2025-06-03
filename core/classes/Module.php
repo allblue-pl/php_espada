@@ -16,8 +16,7 @@ abstract class Module {
 
 	}
 
-    final public function preDisplay(Site $site)
-    {
+    final public function preDisplay(Site $site) {
         if (!$this->preDisplayed) {
 			$this->_preDisplay($site);
 
@@ -77,8 +76,7 @@ abstract class Module {
 			throw new \Exception('Pre initialization required.');
 	}
 
-    protected function _preDisplay(Site $site)
-    {
+    protected function _preDisplay(Site $site) {
 
     }
 

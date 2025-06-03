@@ -6,13 +6,11 @@ class PageAlias {
 
     private $args = [];
 
-    public function __construct($uri)
-    {
+    public function __construct($uri) {
         $this->parseUri($uri);
     }
 
-    public function checkUriArgs($args)
-    {
+    public function checkUriArgs($args) {
         $args_length = count($this->args);
 
         $extra_args = false;
@@ -58,13 +56,11 @@ class PageAlias {
         return $uri_args;
     }
 
-    public function getParts()
-    {
+    public function getParts() {
         return $this->args;
     }
 
-    private function parseUri($uri)
-    {
+    private function parseUri($uri) {
         $uri_array = explode('/', $uri);
 
         $this->args = [];

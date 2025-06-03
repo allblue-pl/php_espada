@@ -13,13 +13,11 @@ class Langs {
 		return self::$Instance->getLang($lang_name);
     }
     
-    static public function GetAll()
-    {
+    static public function GetAll() {
         return self::$Instance->langs;
     }
 
-    static public function GetAllNames()
-    {
+    static public function GetAllNames() {
         $langNames = [];
         foreach (self::GetAll() as $lang) {
             $langNames[] = $lang['name'];
@@ -28,8 +26,7 @@ class Langs {
         return $langNames;
     }
 
-    static public function GetName()
-    {
+    static public function GetName() {
         return self::Get()['name'];
     }
 

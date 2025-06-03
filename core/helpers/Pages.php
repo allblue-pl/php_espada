@@ -19,8 +19,7 @@ class Pages {
 		return self::$Instance->pages[$pageName];
     }
     
-    static public function GetAll($langName = '')
-    {
+    static public function GetAll($langName = '') {
         $langName = Langs::Get($langName)['name'];
 
         $pages = [];

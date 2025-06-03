@@ -7,8 +7,7 @@ class Package {
     static private $PackagePaths = null;
     static private $Overwrites = [];
 
-    static public function Details($filePath, $noOverwrites = false)
-    {
+    static public function Details($filePath, $noOverwrites = false) {
         $filePath = $package . '/' . $path;
 
         if (!$noOverwrites) {
@@ -40,8 +39,7 @@ class Package {
     }
 
     static public function Details_FromPath($path, $dir = '',
-            $ext = '')
-    {
+            $ext = '') {
         $path_array = explode(':', $path);
         if (count($path_array) !== 2)
             throw new \Exception("Wrong path `{$path}` format.");
@@ -53,8 +51,7 @@ class Package {
                 $dir . $path_array[1] . $ext);
     }
 
-    static public function Path($package, $path, $noOverwrites = false)
-    {
+    static public function Path($package, $path, $noOverwrites = false) {
         $filePath = $package . '/' . $path;
         // if ($package === 'site') {
         //     if (File::Exists(PATH_ESITE . '/' . $filePath))
@@ -84,8 +81,7 @@ class Package {
     }
 
     static public function Path_FromPath($path, $dir = '',
-            $ext = '')
-    {
+            $ext = '') {
         $path_array = explode(':', $path);
         if (count($path_array) !== 2)
             throw new \Exception("Wrong path `{$path}` format.");
@@ -97,8 +93,7 @@ class Package {
                 $dir . $path_array[1] . $ext);
     }
 
-    static public function Uri($package, $path, $noOverwrites = false)
-    {
+    static public function Uri($package, $path, $noOverwrites = false) {
         $filePath = $package . '/' . $path;
 
         // if ($package === 'site') {
@@ -126,8 +121,7 @@ class Package {
         return null;
     }
 
-    static public function Uri_FromPath($path, $dir, $ext)
-    {
+    static public function Uri_FromPath($path, $dir, $ext) {
         $path_array = explode(':', $path);
         if (count($path_array) !== 2)
             throw new \Exception("Wrong path `{$path}` format.");
@@ -148,8 +142,7 @@ class Package {
 		      array_unshift(self::$Overwrites[$from_package][$to_package], $path);
 	}
 
-    static public function UnOverwrite($from_package, $to_package = null)
-    {
+    static public function UnOverwrite($from_package, $to_package = null) {
         if ($to_package === null)
             unset(self::$Overwrites[$from_package]);
 
@@ -162,8 +155,7 @@ class Package {
     }
 
 
-    static private function GetPackagePaths()
-    {
+    static private function GetPackagePaths() {
         if (self::$PackagePaths !== null)
             return self::$PackagePaths;
 

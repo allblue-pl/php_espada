@@ -7,8 +7,7 @@ class Notice {
     static private $Fields = null;
     static private $Notices = [];
 
-    static public function Add($message)
-    {
+    static public function Add($message) {
         $notice = [
             'message' => $message,
             'backtrace' => debug_backtrace(),
@@ -26,8 +25,7 @@ class Notice {
         self::$Notices[] = $notice;
     }
 
-    static public function GetAll()
-    {
+    static public function GetAll() {
         return self::$Notices;
     }
 

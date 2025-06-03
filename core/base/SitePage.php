@@ -7,14 +7,12 @@ class SitePage {
     private $name = '';
     private $pages = null;
 
-    public function __construct(\E\Pages $pages, $name)
-    {
+    public function __construct(\E\Pages $pages, $name) {
         $this->pages = $pages;
         $this->name = $name;
     }
 
-    public function alias($arg1, $arg2 = null)
-    {
+    public function alias($arg1, $arg2 = null) {
         $langName = null;
         $uri = null;
         if ($arg2 === null) {

@@ -8,15 +8,13 @@ class Holders {
     private $holders = [];
     private $holders_Displayed = [];
 
-    public function __construct(Site $site, $holders, &$holders_displayed)
-    {
+    public function __construct(Site $site, $holders, &$holders_displayed) {
         $this->site = $site;
         $this->holders = $holders;
         $this->holders_Displayed = &$holders_displayed;
     }
 
-    public function __get($name)
-    {
+    public function __get($name) {
         if (!isset($this->holders[$name])) {
             if (EDEBUG)
                 Notice::Add("Empty holder `{$name}`.");

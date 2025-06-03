@@ -3,13 +3,11 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 class Layout implements ILayout {
 
-    static public function _($layoutPath, $fields = [])
-    {
+    static public function _($layoutPath, $fields = []) {
         return new Layout($layoutPath, $fields);
     }
 
-    static public function Exists($layoutPath)
-    {
+    static public function Exists($layoutPath) {
         $layoutPath_array = explode(':', $layoutPath);
         if (count($layoutPath_array) !== 2)
             return false;
@@ -23,8 +21,7 @@ class Layout implements ILayout {
     }
 
     static private function RequireFile($eFilePath, Holders $eHolders,
-            Fields $eFields)
-    {
+            Fields $eFields) {
         $fields = $eFields->getRootFields();
 
         foreach ($fields as $field_name => $field_value) {
@@ -48,16 +45,14 @@ class Layout implements ILayout {
 
     private $validated = false;
 
-    public function __construct($layoutPath = null, $fields = [])
-    {
+    public function __construct($layoutPath = null, $fields = []) {
         if ($layoutPath !== null)
             $this->setPath($layoutPath);
 
         $this->fields = $fields;
     }
 
-    final public function addL($holder_name, Layout $layout)
-    {
+    final public function addL($holder_name, Layout $layout) {
         // if ($this->postInitialized)
         //     throw new \Exception('Cannot add layout after initialization.');
 
@@ -71,8 +66,7 @@ class Layout implements ILayout {
         return $layout;
     }
 
-    final public function display(Site $site)
-    {
+    final public function display(Site $site) {
         $this->_preDisplay($site);
 
         $fields = $this->getFields();
@@ -99,24 +93,21 @@ class Layout implements ILayout {
     //             $layout->preInitialize();
     // }
 
-    final public function &getFields()
-    {
+    final public function &getFields() {
         if ($this->validated)
             throw new \Exception('Cannot modify layout after validation.');
 
         return $this->fields;
     }
 
-    final public function setFields(array $fields)
-    {
+    final public function setFields(array $fields) {
         if ($this->validated)
             throw new \Exception('Cannot modify layout after validation.');
 
         $this->fields = array_replace_recursive($this->fields, $fields);
     }
 
-    final public function setPath($layoutPath)
-    {
+    final public function setPath($layoutPath) {
         if ($this->validated)
             throw new \Exception('Cannot modify layout after validation.');
 
@@ -130,8 +121,7 @@ class Layout implements ILayout {
             throw new \Exception("Layout path `{$layoutPath}` does not exist.");
     }
 
-    final public function validate($fields)
-    {
+    final public function validate($fields) {
         $child_class = get_called_class();
 
         if ($this->filePath === null)
@@ -144,14 +134,12 @@ class Layout implements ILayout {
     }
 
 
-    protected function _preDisplay(Site $site)
-    {
+    protected function _preDisplay(Site $site) {
 
     }
 
 
-    private function validateHolders()
-    {
+    private function validateHolders() {
         foreach ($this->holders_Displayed as $holder_name => $displayed) {
             if (!$displayed)
                 Notice::Add("Holder `$holder_name` set, but not displayed.");

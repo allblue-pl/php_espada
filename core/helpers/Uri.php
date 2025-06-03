@@ -94,8 +94,7 @@ class Uri {
     }
     
     static public function Page_Raw($pageName = null, $langName = '', 
-            $pathOnly = true, $includeBase = true)
-    {
+            $pathOnly = true, $includeBase = true) {
         if ($pageName === null)
 			$pageName = Pages::Get()->getName();
 
@@ -131,8 +130,7 @@ class Uri {
 		return $uris;
 	}
 
-    static public function Protocol()
-    {
+    static public function Protocol() {
         if (mb_strpos(self::Domain(), 'https://'))
                 return 'https://';
 
@@ -147,8 +145,7 @@ class Uri {
 		return self::Domain() . self::$Instance->uri;
     }
     
-    static public function Query($getArgs)
-    {
+    static public function Query($getArgs) {
         $query = '';
 
         $first = true;
@@ -215,14 +212,12 @@ class Uri {
 		return count($this->args);
 	}
 
-    public function getUri()
-    {
+    public function getUri() {
         return $this->uri;
     }
 
 
-    private function parseArg($arg_Raw)
-    {
+    private function parseArg($arg_Raw) {
         $arg = "";
         $allowedChars = 'qwertyuiopasdfghjklzxcvbnm' . 
                 'QWERTYUIOPASDFGHJKLZXCVBNM' . 
