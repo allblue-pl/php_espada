@@ -36,8 +36,7 @@ class Espada {
 	static private $Initialized = false;
 	static private $LoadedECoreClasses = [];
 
-	static public function ChangePage($page_name)
-	{
+	static public function ChangePage($page_name) {
 		$page = \E\Pages::Get($page_name);
 		if ($page === null)
 			throw new \Exception("Page `{$page_name}` does not exist.");
@@ -45,16 +44,14 @@ class Espada {
 		self::SetPage($page);
 	}
 
-	static public function Create()
-	{
+	static public function Create() {
 		if (self::$Instance !== null)
 			throw new \Exception('Espada already created.');
 
 		new Espada();
 	}
 
-	static public function Initialize(\E\Site $site)
-	{
+	static public function Initialize(\E\Site $site) {
 		if (PREINIT_CONTENTS !== '')
 			E\Notice::Add(PREINIT_CONTENTS);
 
@@ -153,8 +150,7 @@ class Espada {
 	// 	return true;
 	// }
 
-	static public function NoAccess($message = '')
-	{
+	static public function NoAccess($message = '') {
 		self::$Instance->deinitialize();
 
 		header('HTTP/1.0 401 Unauthorized');
@@ -162,8 +158,7 @@ class Espada {
 		exit();
 	}
 
-	static public function NotFound($message = '')
-	{
+	static public function NotFound($message = '') {
 		self::$Instance->deinitialize();
 
 		header('HTTP/1.0 404 Not Found');
@@ -171,16 +166,14 @@ class Espada {
 		exit();
 	}
 
-	static public function Redirect($uri, $http_response_code = 303)
-	{
+	static public function Redirect($uri, $http_response_code = 303) {
 		self::$Instance->deinitialize();
 
 		header('Location: ' . $uri, TRUE, $http_response_code);
 		exit();
 	}
 
-	static private function GetPageFilePath($page_path)
-	{
+	static private function GetPageFilePath($page_path) {
 		$page_path_array = explode(':', $page_path);
 		if (count($page_path_array) !== 2)
 			throw new \Exception('Wrong page file path format:' . $page_path);
@@ -189,8 +182,7 @@ class Espada {
 				'pages/' . $page_path_array[1] . '.php');
 	}
 
-	static public function SetPage(\E\Page $page)
-	{
+	static public function SetPage(\E\Page $page) {
 		if (self::$Instance !== null)
 			self::$Instance->deinitialize();
 
@@ -206,8 +198,7 @@ class Espada {
 	private $pagePath;
 	private $site;
 
-	private function __construct()
-	{
+	private function __construct() {
 		self::$Instance = $this;
 
 		set_exception_handler('\E\Exception::ExceptionHandler');
@@ -234,16 +225,14 @@ class Espada {
 		self::SetPage(\E\Pages::Get());
 	}
 
-	public function deinitialize()
-	{
+	public function deinitialize() {
 		if ($this->site !== null) {
 			$this->site->deinitialize();
 			$this->site = null;
 		}
 	}
 
-	public function display()
-	{
+	public function display() {
 		if (self::$Instance->site === null)
 			throw new \Exception('\E\Site has not been initialized.');
 
@@ -258,13 +247,11 @@ class Espada {
 		// $layout->display();
 	}
 
-	public function getPagePath()
-	{
+	public function getPagePath() {
 		return $this->pagePath;
 	}
 
-	private function requirePage($page_path)
-	{
+	private function requirePage($page_path) {
 		require($page_path);
 	}
 

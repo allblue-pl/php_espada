@@ -3,19 +3,16 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 
 class Uri {
-
 	static private $Instance = null;
 
-	static public function Base($pathOnly = true)
-	{
+	static public function Base($pathOnly = true) {
 		if ($pathOnly)
 			return self::$Instance->base;
 
 		return Uri::Domain() . self::$Instance->base;
 	}
 
-	static public function Current($pathOnly = true)
-	{
+	static public function Current($pathOnly = true) {
 		if (self::$Instance === null) {
 			throw new \Exception('Cannot get current uri' .
 					' before initialization.');
@@ -27,16 +24,14 @@ class Uri {
 		return Uri::Domain() . self::$Instance->uri;
 	}
 
-	static public function Domain()
-	{
+	static public function Domain() {
 		if (SITE_DOMAIN !== '')
 			return SITE_DOMAIN;
 
 		return $_SERVER['HTTP_HOST'];
 	}
 
-	static public function File($path, $pathOnly = true)
-	{
+	static public function File($path, $pathOnly = true) {
 		$file_uri = Package::Uri_FromPath($path, 'front', '');
 		if ($file_uri === null)
 			Notice::Add("Cannot find front file: {$path}.");
@@ -47,8 +42,7 @@ class Uri {
 		return self::Domain() . $file_uri;
 	}
 
-	static public function Media($package_name, $file_path)
-	{
+	static public function Media($package_name, $file_path) {
 		$package_name = mb_strtolower($package_name);
 		$fs_file_path = PATH_MEDIA . '/' . $package_name . '/' . $file_path;
 
@@ -59,8 +53,7 @@ class Uri {
 	}
 
 	static public function Page($pageName = null, $uriArgs = null,
-			$langName = '', $pathOnly = true, $includeBase = true)
-	{
+			$langName = '', $pathOnly = true, $includeBase = true) {
 		if ($pageName === null) {
 			$pageName = Pages::Get()->getName();
 
@@ -120,8 +113,7 @@ class Uri {
 		return $uri . $pageUri;
     }
 
-	static public function Pages($pageNames)
-	{
+	static public function Pages($pageNames) {
 		$uris = [];
 
 		foreach ($pageNames as $key => $pageName)
@@ -137,8 +129,7 @@ class Uri {
         return 'http://';
     }
 
-	static public function Site($pathOnly = true)
-	{
+	static public function Site($pathOnly = true) {
 		if ($pathOnly)
 			return self::$Instance->uri;
 
@@ -162,8 +153,7 @@ class Uri {
 	private $args;
 	private $uri;
 
-	public function __construct($uri_Raw)
-	{
+	public function __construct($uri_Raw) {
 		if (self::$Instance !== null)
 			throw new \Exception("Uri already created.");
 
@@ -194,21 +184,18 @@ class Uri {
         $this->uri = $this->base . implode('/', $this->args) . $query;
 	}
 
-	public function getArg($index)
-	{
+	public function getArg($index) {
 		if (isset($this->args[$index]))
 			return $this->args[$index];
 
 		return null;
 	}
 
-	public function getArgs()
-	{
+	public function getArgs() {
 		return $this->args;
 	}
 
-	public function getArgs_Length()
-	{
+	public function getArgs_Length() {
 		return count($this->args);
 	}
 
@@ -230,5 +217,4 @@ class Uri {
 
         return $arg;
     }
-
 }

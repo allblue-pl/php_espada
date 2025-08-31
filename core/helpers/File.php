@@ -62,29 +62,25 @@ class File {
 			'ods' => 'application/vnd.oasis.opendocument.spreadsheet',
 	);
 
-	static public function Exists($file_path)
-	{
+	static public function Exists($file_path) {
 	    if(file_exists($file_path))
 	        return true;
 
 	    return false;
 	}
 
-	static public function GetContents($file_path)
-	{
+	static public function GetContents($file_path) {
 		if (!self::Exists($file_path))
 			throw new \Exception("File `{$file_path}` does not exist.");
 
 		return file_get_contents($file_path);
 	}
 
-	static public function NotFound($error_message = null)
-	{
+	static public function NotFound($error_message = null) {
         \Espada::NotFound($error_message === null ? '' : $error_message);
 	}
 
-	static public function Output($file_name, $content, $charset ='utf-8')
-	{
+	static public function Output($file_name, $content, $charset ='utf-8') {
 		set_time_limit(0);
 
 		$content_mime_type = \E\File::GetContentMimeType($file_name);
@@ -98,8 +94,7 @@ class File {
 		echo $content;
 	}
 
-	static public function OutputImage($file_name, $image)
-	{
+	static public function OutputImage($file_name, $image) {
 		$ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
 
 		$tmp_file_path = tempnam(PATH_TMP, 'img');
@@ -118,8 +113,7 @@ class File {
 		unlink($tmp_file_path);
 	}
 
-	static public function OutputPath($file_path, $file_name = null)
-	{
+	static public function OutputPath($file_path, $file_name = null) {
 		set_time_limit(0);
 
         if ($file_name === null)
@@ -159,8 +153,7 @@ class File {
 		}
 	}
 
-	static public function Path($path)
-	{
+	static public function Path($path) {
 		return Package::Path_FromPath($path);
 	}
 

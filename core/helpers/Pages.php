@@ -6,8 +6,7 @@ class Pages {
 
 	static private $Instance = null;
 
-	static public function Get($pageName = '', $langName = '')
-	{
+	static public function Get($pageName = '', $langName = '') {
 		$langName = Langs::Get($langName)['name'];
 
 		if ($pageName === '')
@@ -32,8 +31,7 @@ class Pages {
         return $pages;
     }
 
-	static public function GetName()
-	{
+	static public function GetName() {
 		return self::Get('')->getName();
 	}
 
@@ -48,8 +46,7 @@ class Pages {
 	private $notFoundPageNames = [];
 
 
-	public function __construct(Langs $langs, Uri $uri)
-	{
+	public function __construct(Langs $langs, Uri $uri) {
 		if (self::$Instance !== null)
 			throw new \Exception('Pages already created.');
 
@@ -70,8 +67,7 @@ class Pages {
 		$this->parseUri($uri, $args_offset);
 	}
 
-	public function addPage($name, $path, $args)
-	{
+	public function addPage($name, $path, $args) {
 		if (isset($this->pages[$name]))
 			throw new \Exception("Page `{$name}` already exists.");
 
@@ -86,8 +82,7 @@ class Pages {
 		return new SitePage($this, $name);
 	}
 
-	public function addPageAlias($langName, $pageName, $uri)
-	{
+	public function addPageAlias($langName, $pageName, $uri) {
 		$lang = $this->langs->getLang($langName);
 		if ($lang === null)
 			throw new \Exception("Language `{$langName}` does not exist.");
@@ -98,8 +93,7 @@ class Pages {
         $this->pagesAliases[$pageName][$lang['name']] = $page_alias;
 	}
 
-	private function parseUri(Uri $uri, $args_offset)
-	{
+	private function parseUri(Uri $uri, $args_offset) {
 		$lang = Langs::Get();
 		$langName = $lang['name'];
 
@@ -134,8 +128,7 @@ class Pages {
 		throw new \Exception('Page not found.');
 	}
 
-	public function setErrorPage($pageName, $langName)
-	{
+	public function setErrorPage($pageName, $langName) {
 		if (!isset($this->pages[$pageName]))
 			throw new \Exception("Page `{$pageName}` does not exist.");
 
@@ -143,8 +136,7 @@ class Pages {
 		$this->errorPageNames[$lang['name']] = $pageName;
 	}
 
-	public function setNotFoundPage($pageName, $langName)
-	{
+	public function setNotFoundPage($pageName, $langName) {
 		if (!isset($this->pages[$pageName]))
 			throw new \Exception("Page `{$pageName}` does not exist.");
 
@@ -152,8 +144,7 @@ class Pages {
 		$this->notFoundPageNames[$lang['name']] = $pageName;
 	}
 
-	private function requireSitePath($site_path)
-	{
+	private function requireSitePath($site_path) {
 		$eSite = new SitePages($this->langs, $this);
 
 		require($site_path);

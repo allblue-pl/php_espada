@@ -11,8 +11,7 @@ abstract class Module {
 	private $preInitialized = false;
 	private $postInitialized = false;
 
-	public function __construct()
-	{
+	public function __construct() {
 
 	}
 
@@ -24,8 +23,7 @@ abstract class Module {
 		}
     }
 
-	final public function preInitialize(Site $site)
-	{
+	final public function preInitialize(Site $site) {
 		if (!$this->preInitialized) {
 			$this->_preInitialize($site);
 
@@ -33,8 +31,7 @@ abstract class Module {
 		}
 	}
 
-	final public function postInitialize(Site $site)
-	{
+	final public function postInitialize(Site $site) {
 		if (!$this->postInitialized) {
 			$this->_postInitialize($site);
 
@@ -42,36 +39,30 @@ abstract class Module {
 		}
 	}
 
-	final public function deinitialize()
-	{
+	final public function deinitialize() {
 		$this->_deinitialize();
 	}
 
-	public function isInitialized()
-	{
+	public function isInitialized() {
 		return $this->preInitialized;
 	}
 
-	public function requireBeforePostInitialize()
-	{
+	public function requireBeforePostInitialize() {
 		if ($this->postInitialized)
 			throw new \Exception('Can`t execute after post initialize.');
 	}
 
-	public function requirePostInitialize()
-	{
+	public function requirePostInitialize() {
 		if (!$this->postInitialized)
 			throw new \Exception('Post initialization required.');
 	}
 
-    public function requireBeforePreDisplay()
-	{
+    public function requireBeforePreDisplay() {
 		if ($this->preDisplayed)
 			throw new \Exception('Can`t execute after `preDisplayed`.');
 	}
 
-	public function requirePreInitialize()
-	{
+	public function requirePreInitialize() {
 		if (!$this->preInitialized)
 			throw new \Exception('Pre initialization required.');
 	}
@@ -80,18 +71,15 @@ abstract class Module {
 
     }
 
-	protected function _preInitialize(Site $site)
-	{
+	protected function _preInitialize(Site $site) {
 
 	}
 
-	protected function _postInitialize(Site $site)
-	{
+	protected function _postInitialize(Site $site) {
 
 	}
 
-	protected function _deinitialize()
-	{
+	protected function _deinitialize() {
 
 	}
 

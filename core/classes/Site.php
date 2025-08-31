@@ -20,14 +20,12 @@ class Site implements ILayout {
     private $listeners_PreDisplay = [];
 
 
-	public function __construct()
-	{
+	public function __construct() {
 		$this->siteModules = new Modules();
 	}
 
 
-	final public function __get($name)
-	{
+	final public function __get($name) {
 		if ($name === 'modules' || $name === 'm')
 			return $this->siteModules;
 
@@ -36,8 +34,7 @@ class Site implements ILayout {
     }
 
 
-	final public function addL($holder_name, Layout $layout)
-	{
+	final public function addL($holder_name, Layout $layout) {
 		if (!isset($this->holders[$holder_name]))
 			$this->holders[$holder_name] = [];
 		$this->holders[$holder_name][] = $layout;
@@ -45,13 +42,11 @@ class Site implements ILayout {
 		return $layout;
 	}
 
-	final public function addLayout($holder_name, Layout $layout)
-	{
+	final public function addLayout($holder_name, Layout $layout) {
 		$this->addL($holder_name, $layout);
 	}
 
-	final public function addM($module_name, Module $module)
-	{
+	final public function addM($module_name, Module $module) {
 		if ($this->initialized)
 			throw new \Exception('Cannot add module after initialization.');
 
@@ -60,19 +55,16 @@ class Site implements ILayout {
 		return $module;
 	}
 
-	final public function addModule($module_name, Module $module)
-	{
+	final public function addModule($module_name, Module $module) {
 		$this->addM($module_name, $module);
 	}
 
-	final public function deinitialize()
-	{
+	final public function deinitialize() {
 		$this->_deinitialize();
 		$this->siteModules->deinitialize();
 	}
 
-	final public function display()
-	{
+	final public function display() {
 		if ($this->rootLayout === null)
             throw new \Exception('Root layout not set.');
 
@@ -99,8 +91,7 @@ class Site implements ILayout {
 	// 	return $this->rootLayout;
 	// }
 
-	final public function initialize()
-	{
+	final public function initialize() {
 		/* Pre Initialize */
 		$this->siteModules->preInitialize($this);
 
@@ -126,21 +117,18 @@ class Site implements ILayout {
 		$this->postInitialized = true;
 	}
 
-	final public function isInitialized()
-	{
+	final public function isInitialized() {
 		return $this->initialized;
 	}
 
-	final public function layouts()
-	{
+	final public function layouts() {
 		if ($this->rootLayout === null)
 			throw new \Exception('Root layout not set.');
 
 		return $this->rootLayout->layouts;
 	}
 
-	final public function onPostInitialize(\Closure $listener)
-	{
+	final public function onPostInitialize(\Closure $listener) {
         if ($this->initialized) {
             throw new \Exception("Cannot add 'PostInitialize' listener after initialization.");
         }
@@ -148,8 +136,7 @@ class Site implements ILayout {
 		$this->listeners_PostInitialize[] = $listener;
 	}
 
-    final public function onPreDisplay(\Closure $listener)
-	{
+    final public function onPreDisplay(\Closure $listener) {
         if ($this->preDisplayed) {
             throw new \Exception("Cannot add 'PreDisplay' listener after displaying.");
         }
@@ -157,8 +144,7 @@ class Site implements ILayout {
 		$this->listeners_PreDisplay[] = $listener;
 	}
 
-	final public function onPreInitialize(\Closure $listener)
-	{
+	final public function onPreInitialize(\Closure $listener) {
         if ($this->initialized) {
             throw new \Exception("Cannot add 'PreInitialize' listener after initialization.");
         }
@@ -166,34 +152,28 @@ class Site implements ILayout {
 		$this->listeners_PreInitialize[] = $listener;
 	}
 
-	final public function setRootL(Layout $layout)
-	{
+	final public function setRootL(Layout $layout) {
 		$this->rootLayout = $layout;
 	}
 
 	
-	protected function _deinitialize()
-	{
+	protected function _deinitialize() {
 
 	}
 
-	protected function _initialize()
-	{
+	protected function _initialize() {
 		$this->initialized = true;
 	}
 
-	protected function _postInitialize()
-	{
+	protected function _postInitialize() {
 		
 	}
 
-	protected function _preDisplay()
-	{
+	protected function _preDisplay() {
 		$this->preDisplayed = true;
 	}
 
-	protected function _preInitialize()
-	{
+	protected function _preInitialize() {
 
 	}
 

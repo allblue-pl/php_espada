@@ -130,8 +130,7 @@ class Package {
                 $dir . '/' . $path_array[1] . $ext);
     }
 
-    static public function Overwrite($from_package, $to_package, $path = '*')
-	{
+    static public function Overwrite($from_package, $to_package, $path = '*') {
 		if (!isset(self::$Overwrites[$from_package]))
 			self::$Overwrites[$from_package] = [];
 

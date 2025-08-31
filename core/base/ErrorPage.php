@@ -9,41 +9,34 @@ class ErrorPage {
 
 	static private $Code = 500;
 
-	static public function Initialize()
-	{
+	static public function Initialize() {
 		Espada::Deinitialize();
 
 		require(PATH_SITE.'/pages/error.php');
 		exit;
 	}
 
-	static public function SetTitle($title)
-	{
+	static public function SetTitle($title) {
 		self::$Title = $title;
 	}
 
-	static public function SetMessage($message)
-	{
+	static public function SetMessage($message) {
 		self::$Message = $message;
 	}
 
-	static public function SetCode($code)
-	{
+	static public function SetCode($code) {
 		self::$Code = $code;
 	}
 
-	static public function GetTitle()
-	{
+	static public function GetTitle() {
 		return self::$Title;
 	}
 
-	static public function GetMessage()
-	{
+	static public function GetMessage() {
 		return self::$Message;
 	}
 
-	static public function GetCode()
-	{
+	static public function GetCode() {
 		return self::$Code;
 	}
 

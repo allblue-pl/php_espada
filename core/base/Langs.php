@@ -5,8 +5,7 @@ class Langs {
 
 	static private $Instance = null;
 
-	static public function Get($lang_name = '')
-	{
+	static public function Get($lang_name = '') {
 		if ($lang_name === '')
 			$lang_name = self::$Instance->currentLangName;
 
@@ -35,16 +34,14 @@ class Langs {
 	private $defaultLangName = null;
 	private $currentLangName = null;
 
-	public function __construct()
-	{
+	public function __construct() {
 		if (self::$Instance !== null)
 			throw new \Exception("\E\Langs already created.");
 
 		self::$Instance = $this;
 	}
 
-	public function add($lang_name, $lang_alias, $lang_code)
-	{
+	public function add($lang_name, $lang_alias, $lang_code) {
         $lang = $this->getLang($lang_name);
 		if ($lang !== null)
 			throw new \Exception("Lang `{$lang_name}` already exists.");
@@ -58,8 +55,7 @@ class Langs {
 			$this->defaultLangName = $lang_name;
 	}
 
-	public function getLang($lang_name = '')
-	{
+	public function getLang($lang_name = '') {
 		if ($lang_name === '')
 			$lang_name = $this->defaultLangName;
 
@@ -71,16 +67,14 @@ class Langs {
 		return null;
 	}
 
-	public function getLangPages($lang_name)
-	{
+	public function getLangPages($lang_name) {
 		if (!isset(self::$Instance->langPages[$lang_name]))
 			throw new \Exception("Lang `" . $lang_name . '` does not exist.');
 
 		return $this->langPages[$lang_name];
 	}
 
-	public function parseUri(\E\Uri $uri)
-	{
+	public function parseUri(\E\Uri $uri) {
 		$empty_alias_lang_name = null;
 		foreach ($this->langs as $lang) {
             $lang_name = $lang['name'];
@@ -103,8 +97,7 @@ class Langs {
 		throw new \Exception('Cannot determine language from uri.');
 	}
 
-	public function setCurrentLangName($lang_name)
-	{
+	public function setCurrentLangName($lang_name) {
 		$this->currentLangName = $lang_name;
 	}
 }

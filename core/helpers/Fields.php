@@ -2,21 +2,18 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 class Fields { // implements \Iterator
-	static public function _($fields = [])
-	{
+	static public function _($fields = []) {
 		return new Fields($fields);
 	}
 
 
 	private $fields;
 
-	public function __construct($fields = [])
-	{
+	public function __construct($fields = []) {
 		$this->fields = $fields;
 	}
 
-	public function &__get($name)
-	{
+	public function &__get($name) {
 		if (!in_array($name, array_keys($this->fields))) {
 			if (EDEBUG)
 				Notice::Add("Field `{$name}` not set.");
@@ -28,28 +25,23 @@ class Fields { // implements \Iterator
 		return $this->fields[$name];
 	}
 
-	public function __set($name, $value)
-	{
+	public function __set($name, $value) {
 		$this->fields[$name] = $value;
 	}
 
-	public function getRootFields()
-	{
+	public function getRootFields() {
 		return $this->fields;
 	}
 
-	public function push($value)
-	{
+	public function push($value) {
 		$this->fields[] = $value;
 	}
 
-	public function set($array)
-	{
+	public function set($array) {
 		$this->fields = $array;
 	}
 
-	public function setSelected($array, $field_names)
-	{
+	public function setSelected($array, $field_names) {
 		foreach ($field_names as $field_name) {
 			if (!isset($array[$field_name])) {
 				Notice::Add("No `{$field_name}` in array.");

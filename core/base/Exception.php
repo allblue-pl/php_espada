@@ -6,8 +6,7 @@ class Exception {
 
 	static private $OnErrorListeners = [];
 
-	static public function AddOnErrorListener(callable $exception_listener)
-	{
+	static public function AddOnErrorListener(callable $exception_listener) {
 		self::$OnErrorListeners[] = $exception_listener;
 	}
 
@@ -16,13 +15,11 @@ class Exception {
     }
 
 	static public function ErrorHandler($errno, $errstr, $errfile,
-			$errline)
-	{
+			$errline) {
 		throw new \ErrorException($errstr, $errno, 0, $errfile, $errline);
 	}
 
-	static public function ExceptionHandler($e)
-	{
+	static public function ExceptionHandler($e) {
 		self::NotifyListeners($e);
 
 		if (!EDEBUG)
@@ -53,14 +50,12 @@ class Exception {
 		die();
 	}
 
-	static public function NotifyListeners($e)
-	{
+	static public function NotifyListeners($e) {
 		foreach (self::$OnErrorListeners as $on_error_listener)
 			$on_error_listener($e);
 	}
 
-	static public function RemoveOnErrorListener(callable $exception_listener)
-	{
+	static public function RemoveOnErrorListener(callable $exception_listener) {
 		$index = array_search($exception_listener, self::$OnErrorListeners);
 		if ($index === false)
 			throw new \Exception('`exception_listener` not in listeners array.');
