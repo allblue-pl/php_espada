@@ -71,6 +71,19 @@ class Args {
 		return $args;
 	}
 
+    static public function Post_Exists($name) {
+		if (isset($_POST[$name]))
+			return true;
+
+		if (isset($_FILES[$name]))
+			return true;
+
+		if (EDEBUG)
+			return self::Get_Exists($name);
+
+		return false;
+	}
+
 	static public function Post_ValidateSize() {
 		if($_SERVER['REQUEST_METHOD'] == 'POST' && empty($_POST) &&
                 empty($_FILES) && $_SERVER['CONTENT_LENGTH'] > 0)
