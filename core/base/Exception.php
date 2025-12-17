@@ -36,7 +36,7 @@ class Exception {
 
 		foreach ($backtrace_array as $backtrace_line) {
 			if (isset($backtrace_line['file']))
-				echo '<b>' . $backtrace_line['file'] . '</b>[line: <b>' . $backtrace_line['line'].'</b>]:'.'<br />'."\n";
+				echo '<b>' . $backtrace_line['file'] . ':' . $backtrace_line['line'] . '</b><br />'."\n";
 			else
 				echo '<b>Unknown</b><br />' . "\n";
 

@@ -46,7 +46,7 @@ class Site implements ILayout {
 		$this->addL($holder_name, $layout);
 	}
 
-	final public function addM($module_name, Module $module) {
+	final public function addM($module_name, Module $module): Module {
 		if ($this->initialized)
 			throw new \Exception('Cannot add module after initialization.');
 
