@@ -67,12 +67,12 @@ class Langs {
 		return null;
 	}
 
-	public function getLangPages($lang_name) {
-		if (!isset(self::$Instance->langPages[$lang_name]))
-			throw new \Exception("Lang `" . $lang_name . '` does not exist.');
+	// public function getLangPages($lang_name) {
+	// 	if (!isset(self::$Instance->langPages[$lang_name]))
+	// 		throw new \Exception("Lang `" . $lang_name . '` does not exist.');
 
-		return $this->langPages[$lang_name];
-	}
+	// 	return $this->langPages[$lang_name];
+	// }
 
 	public function parseUri(\E\Uri $uri) {
 		$empty_alias_lang_name = null;

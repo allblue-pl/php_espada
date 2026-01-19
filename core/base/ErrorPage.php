@@ -1,7 +1,6 @@
 <?php namespace E;
 defined('_ESPADA') or die(NO_ACCESS);
 
-
 class ErrorPage {
 
 	static private $Title = "Error";
@@ -10,7 +9,7 @@ class ErrorPage {
 	static private $Code = 500;
 
 	static public function Initialize() {
-		Espada::Deinitialize();
+		\Espada::Deinitialize();
 
 		require(PATH_SITE.'/pages/error.php');
 		exit;

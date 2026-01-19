@@ -51,6 +51,18 @@ class Espada {
 		new Espada();
 	}
 
+    static public function Deinitialize() {
+        if (self::$Instance === null)
+            return;
+        if (self::$Instance->site === null)
+            return;
+
+		if (self::$Instance->site !== null) {
+			self::$Instance->site->deinitialize();
+			self::$Instance->site = null;
+		}
+	}
+
 	static public function Initialize(\E\Site $site) {
 		if (PREINIT_CONTENTS !== '')
 			E\Notice::Add(PREINIT_CONTENTS);
@@ -151,7 +163,7 @@ class Espada {
 	// }
 
 	static public function NoAccess($message = '') {
-		self::$Instance->deinitialize();
+		self::Deinitialize();
 
 		header('HTTP/1.0 401 Unauthorized');
 		echo $message;
@@ -159,7 +171,7 @@ class Espada {
 	}
 
 	static public function NotFound($message = '') {
-		self::$Instance->deinitialize();
+		self::Deinitialize();
 
 		header('HTTP/1.0 404 Not Found');
 		echo $message;
@@ -167,7 +179,7 @@ class Espada {
 	}
 
 	static public function Redirect($uri, $http_response_code = 303) {
-		self::$Instance->deinitialize();
+		self::Deinitialize();
 
 		header('Location: ' . $uri, TRUE, $http_response_code);
 		exit();
@@ -184,12 +196,12 @@ class Espada {
 
 	static public function SetPage(\E\Page $page) {
 		if (self::$Instance !== null)
-			self::$Instance->deinitialize();
+			self::Deinitialize();
 
 		require($page->getFilePath());
 
 		self::$Instance->display();
-		self::$Instance->deinitialize();
+		self::Deinitialize();
 
 		exit;
 	}
@@ -223,13 +235,6 @@ class Espada {
 
 		/* Page Path */
 		self::SetPage(\E\Pages::Get());
-	}
-
-	public function deinitialize() {
-		if ($this->site !== null) {
-			$this->site->deinitialize();
-			$this->site = null;
-		}
 	}
 
 	public function display() {
