@@ -1,13 +1,16 @@
 <?php namespace E;
+
+use Closure;
+
 defined('_ESPADA') or die(NO_ACCESS);
 
 class Layout implements ILayout {
 
-    static public function _($layoutPath, $fields = []) {
+    static public function _(string $layoutPath, array|Closure $fields = []) {
         return new Layout($layoutPath, $fields);
     }
 
-    static public function Exists($layoutPath) {
+    static public function Exists(string $layoutPath) {
         $layoutPath_array = explode(':', $layoutPath);
         if (count($layoutPath_array) !== 2)
             return false;
@@ -20,8 +23,8 @@ class Layout implements ILayout {
         return true;
     }
 
-    static private function RequireFile($eFilePath, Holders $eHolders,
-            Fields $eFields) {
+    static private function RequireFile(string $eFilePath, LayoutViewer $l, 
+            Holders $eHolders, Fields $eFields) {
         $fields = $eFields->getRootFields();
 
         foreach ($fields as $field_name => $field_value) {
@@ -37,31 +40,31 @@ class Layout implements ILayout {
     }
 
 
-    private $filePath = null;
-    private $fields = null;
+    private ?string $filePath = null;
+    private array|Closure $fields;
 
-    private $holders = [];
-    private $holders_Displayed = [];
+    private array $holders = [];
+    private array $holders_Displayed = [];
 
     private $validated = false;
 
-    public function __construct($layoutPath = null, $fields = []) {
+    public function __construct($layoutPath = null, array|Closure $fields = []) {
         if ($layoutPath !== null)
             $this->setPath($layoutPath);
 
         $this->fields = $fields;
     }
 
-    final public function addL($holder_name, Layout $layout) {
+    final public function addL(string $holderName, Layout $layout) {
         // if ($this->postInitialized)
         //     throw new \Exception('Cannot add layout after initialization.');
 
-        if (!isset($this->holders[$holder_name])) {
-            $this->holders[$holder_name] = [];
-            $this->holders_Displayed[$holder_name] = false;
+        if (!isset($this->holders[$holderName])) {
+            $this->holders[$holderName] = [];
+            $this->holders_Displayed[$holderName] = false;
         }
 
-        $this->holders[$holder_name][] = $layout;
+        $this->holders[$holderName][] = $layout;
 
         return $layout;
     }
@@ -73,13 +76,14 @@ class Layout implements ILayout {
 
         $this->validate($fields);
 
+        $fieldsArray = is_callable($this->fields) ? $fields() : $fields;
+        $fields = Fields::_($fieldsArray);
         $holders = new Holders($site, $this->holders, $this->holders_Displayed);
+        $layoutViewer = new LayoutViewer($fields, $holders);
 
-        $fields_array = is_callable($this->fields) ? $fields() : $fields;
+        self::RequireFile($this->filePath, $layoutViewer, $holders, $fields);
 
-        self::RequireFile($this->filePath, $holders,
-                Fields::_($fields_array));
-
+        /** @phpstan-ignore if.alwaysTrue */
         if (EDEBUG)
             $this->validateHolders();
     }
@@ -107,7 +111,7 @@ class Layout implements ILayout {
         $this->fields = array_replace_recursive($this->fields, $fields);
     }
 
-    final public function setPath($layoutPath) {
+    final public function setPath(string $layoutPath) {
         if ($this->validated)
             throw new \Exception('Cannot modify layout after validation.');
 
@@ -121,7 +125,7 @@ class Layout implements ILayout {
             throw new \Exception("Layout path `{$layoutPath}` does not exist.");
     }
 
-    final public function validate($fields) {
+    final public function validate(?array $fields) {
         $child_class = get_called_class();
 
         if ($this->filePath === null)

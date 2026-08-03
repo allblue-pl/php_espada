@@ -3,11 +3,10 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 
 class Notice {
-
-    static private $Fields = null;
+    // static private $Fields = null;
     static private $Notices = [];
 
-    static public function Add($message) {
+    static public function Add(string $message) {
         $notice = [
             'message' => $message,
             'backtrace' => debug_backtrace(),
@@ -28,5 +27,4 @@ class Notice {
     static public function GetAll() {
         return self::$Notices;
     }
-
 }

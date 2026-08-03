@@ -11,6 +11,7 @@ define('PATH_OVERWRITES', PATH_ESITE . '/overwrites');
 define('PATH_SITE', PATH_ESITE . '/site');
 
 /* Error Reporting */
+/** @phpstan-ignore if.alwaysTrue */
 if (ERROR_REPORTING) {
 	ini_set('display_errors', 1);
 	error_reporting(-1);

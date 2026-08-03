@@ -3,7 +3,6 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 
 class Holders {
-
     private $site = null;
     private $holders = [];
     private $holders_Displayed = [];
@@ -15,24 +14,28 @@ class Holders {
     }
 
     public function __get($name) {
-        if (!isset($this->holders[$name])) {
+        $this->view($name);
+    }
+
+    public function view(string $holderName): void {
+        if (!isset($this->holders[$holderName])) {
+            /* @phpstan-ignore if.alwaysTrue */
             if (EDEBUG)
-                Notice::Add("Empty holder `{$name}`.");
+                Notice::Add("Empty holder `{$holderName}`.");
 
             return;
         }
 
-        if ($this->holders_Displayed[$name])
-            throw new \Exception("Holder '{$name}' already exists.");
+        if ($this->holders_Displayed[$holderName])
+            throw new \Exception("Holder '{$holderName}' already exists.");
 
         // if ($name === 'postHead') {
         //     print_r($this->holders[$name]);
         //     die;
         // }
 
-        foreach ($this->holders[$name] as $layout)
+        foreach ($this->holders[$holderName] as $layout)
             $layout->display($this->site);
-        $this->holders_Displayed[$name] = true;
+        $this->holders_Displayed[$holderName] = true;
     }
-
 }

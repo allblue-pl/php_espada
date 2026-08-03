@@ -3,32 +3,15 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 
 class Modules {
+    /** @var array<Module> */
+	private array $modules_Ordered;
 
-	private $modules = null;
-	private $modules_Ordered = null;
 
 	public function __construct() {
-		$this->modules = [];
 		$this->modules_Ordered = [];
 	}
 
-	public function __get($name) {
-		if (!isset($this->modules[$name]))
-			throw new \Exception("Module `{$name}` does not exist.");
-
-		return $this->modules[$name];
-    }
-    
-    public function __set($name, $value) {
-        $this->add($name, $value);
-    }
-
-
-	public function add($module_name, Module $module) {
-		if (isset($this->modules[$module_name]))
-			throw new \Exception("Module `{$module_name}` already exists.");
-
-		$this->modules[$module_name] = $module;
+	public function add(Module $module) {
 		$this->modules_Ordered[] = $module;
 	}
 

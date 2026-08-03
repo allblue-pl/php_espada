@@ -3,16 +3,15 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 
 abstract class Module {
-
-	private $outputs = [];
-	private $initializations = [];
+	// private $outputs = [];
+	// private $initializations = [];
 
     private $preDisplayed = false;
 	private $preInitialized = false;
 	private $postInitialized = false;
 
-	public function __construct() {
-
+	public function __construct(Site $site) {
+        $site->addM($this);
 	}
 
     final public function preDisplay(Site $site) {

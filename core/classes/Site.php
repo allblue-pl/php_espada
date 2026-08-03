@@ -3,14 +3,13 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 
 class Site implements ILayout {
+	private bool $preDisplayed = false;
+	// private $preInitialized = false;
+	private bool $initialized = false;
+	// private $postInitialized = false;
 
-	private $preDisplayed = false;
-	private $preInitialized = false;
-	private $initialized = false;
-	private $postInitialized = false;
-
-	private $siteModules = null;
-	private $rootLayout = null;
+	private Modules $siteModules;
+	private ?Layout $rootLayout = null;
 
 	private $holders = [];
 
@@ -25,38 +24,29 @@ class Site implements ILayout {
 	}
 
 
-	final public function __get($name) {
-		if ($name === 'modules' || $name === 'm')
-			return $this->siteModules;
-
-		throw new \Exception("Site property `{$name}` does not exit.");
-		return null;
-    }
-
-
-	final public function addL($holder_name, Layout $layout) {
-		if (!isset($this->holders[$holder_name]))
-			$this->holders[$holder_name] = [];
-		$this->holders[$holder_name][] = $layout;
+	final public function addL(string $holderName, Layout $layout) {
+		if (!isset($this->holders[$holderName]))
+			$this->holders[$holderName] = [];
+		$this->holders[$holderName][] = $layout;
 
 		return $layout;
 	}
 
-	final public function addLayout($holder_name, Layout $layout) {
-		$this->addL($holder_name, $layout);
+	final public function addLayout(string $holderName, Layout $layout) {
+		$this->addL($holderName, $layout);
 	}
 
-	final public function addM($module_name, Module $module): Module {
+    final public function addM(Module $module): Module {
 		if ($this->initialized)
 			throw new \Exception('Cannot add module after initialization.');
 
-		$this->siteModules->add($module_name, $module);
+		$this->siteModules->add($module);
 
 		return $module;
 	}
 
-	final public function addModule($module_name, Module $module) {
-		$this->addM($module_name, $module);
+	final public function addModule(Module $module) {
+		$this->addM($module);
 	}
 
 	final public function deinitialize() {
@@ -99,7 +89,7 @@ class Site implements ILayout {
 		foreach ($this->listeners_PreInitialize as $listener)
 			$listener($this);
 
-		$this->preInitialized = true;
+		// $this->preInitialized = true;
 
 		/* Initialized */
 		$this->_initialize();
@@ -114,19 +104,19 @@ class Site implements ILayout {
 
 		$this->siteModules->postInitialize($this);
 
-		$this->postInitialized = true;
+		// $this->postInitialized = true;
 	}
 
 	final public function isInitialized() {
 		return $this->initialized;
 	}
 
-	final public function layouts() {
-		if ($this->rootLayout === null)
-			throw new \Exception('Root layout not set.');
+	// final public function layouts() {
+	// 	if ($this->rootLayout === null)
+	// 		throw new \Exception('Root layout not set.');
 
-		return $this->rootLayout->layouts;
-	}
+	// 	return $this->rootLayout->layouts;
+	// }
 
 	final public function onPostInitialize(\Closure $listener) {
         if ($this->initialized) {

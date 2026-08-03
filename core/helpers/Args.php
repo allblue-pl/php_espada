@@ -3,17 +3,16 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 
 class Args {
+	static private ?Args $Instance = null;
 
-	static private $Instance = null;
-
-	static public function File($name) {
+	static public function File(string $name) {
 		if (!isset($_FILES[$name]))
 			throw new \Exception("File arg `{$name}` does not exist.");
 
 		return $_FILES[$name];
 	}
 
-	static public function Get($name) {
+	static public function Get(string $name) {
 		if (!isset($_GET[$name]))
 			throw new \Exception("Get arg `{$name}` does not exist.");
 
@@ -47,17 +46,14 @@ class Args {
 		return self::$Instance->pageArgs;
 	}
 
-	static public function Post($name, $default = null) {
+	static public function Post($name) {
 		if (isset($_POST[$name]))
 			return urldecode($_POST[$name]);
 
 		if (isset($_FILES[$name]))
 			return urldecode($_FILES[$name]);
 
-		if (EDEBUG)
-			return self::Get($name, $default);
-
-		return $default;
+        throw new \Exception("Post arg `{$name}` does not exist.");
 	}
 
 	static public function Post_All() {
@@ -77,9 +73,6 @@ class Args {
 
 		if (isset($_FILES[$name]))
 			return true;
-
-		if (EDEBUG)
-			return self::Get_Exists($name);
 
 		return false;
 	}

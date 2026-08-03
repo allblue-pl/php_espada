@@ -14,14 +14,15 @@ class Exception {
         self::$OnErrorListeners = [];
     }
 
-	static public function ErrorHandler($errno, $errstr, $errfile,
-			$errline) {
+	static public function ErrorHandler(int $errno, string $errstr, string $errfile,
+			int $errline) {
 		throw new \ErrorException($errstr, $errno, 0, $errfile, $errline);
 	}
 
-	static public function ExceptionHandler($e) {
+	static public function ExceptionHandler(\Throwable $e) {
 		self::NotifyListeners($e);
 
+        /* @phpstan-ignore booleanNot.alwaysFalse */
 		if (!EDEBUG)
 			die (INTERNAL_ERROR_MESSAGE);
 
@@ -50,7 +51,7 @@ class Exception {
 		die();
 	}
 
-	static public function NotifyListeners($e) {
+	static public function NotifyListeners(\Throwable $e) {
 		foreach (self::$OnErrorListeners as $on_error_listener)
 			$on_error_listener($e);
 	}

@@ -14,20 +14,25 @@ class Fields { // implements \Iterator
 	}
 
 	public function &__get($name) {
-		if (!in_array($name, array_keys($this->fields))) {
-			if (EDEBUG)
-				Notice::Add("Field `{$name}` not set.");
-
-			$null = null;
-			return $null;
-		}
-
-		return $this->fields[$name];
+		return $this->get($name);
 	}
 
 	public function __set($name, $value) {
 		$this->fields[$name] = $value;
 	}
+
+    public function &get(string $fieldName): mixed {
+        if (!in_array($fieldName, array_keys($this->fields))) {
+            /** @phpstan-ignore if.alwaysTrue */
+			if (EDEBUG)
+				Notice::Add("Field `{$fieldName}` not set.");
+
+			$null = null;
+			return $null;
+		}
+
+		return $this->fields[$fieldName];
+    }
 
 	public function getRootFields() {
 		return $this->fields;

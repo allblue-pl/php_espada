@@ -8,6 +8,7 @@ require(__DIR__."/base/ErrorPage.php");
 require(__DIR__."/base/Exception.php");
 require(__DIR__."/base/Holders.php");
 require(__DIR__."/base/Langs.php");
+require(__DIR__."/base/LayoutViewer.php");
 require(__DIR__.'/base/Modules.php');
 require(__DIR__.'/base/Notice.php');
 require(__DIR__."/base/PageAlias.php");
@@ -31,15 +32,14 @@ require(__DIR__."/helpers/Uri.php");
 
 
 class Espada {
-
-	static private $Instance = null;
+	static private ?Espada $Instance = null;
 	static private $Initialized = false;
 	static private $LoadedECoreClasses = [];
 
-	static public function ChangePage($page_name) {
-		$page = \E\Pages::Get($page_name);
+	static public function ChangePage(string $pageName) {
+		$page = \E\Pages::Get($pageName);
 		if ($page === null)
-			throw new \Exception("Page `{$page_name}` does not exist.");
+			throw new \Exception("Page `{$pageName}` does not exist.");
 
 		self::SetPage($page);
 	}
@@ -57,10 +57,8 @@ class Espada {
         if (self::$Instance->site === null)
             return;
 
-		if (self::$Instance->site !== null) {
-			self::$Instance->site->deinitialize();
-			self::$Instance->site = null;
-		}
+        self::$Instance->site->deinitialize();
+        self::$Instance->site = null;
 	}
 
 	static public function Initialize(\E\Site $site) {
@@ -76,15 +74,20 @@ class Espada {
 		$site->initialize();
 	}
 
-	static private function LoadECoreClass($class) {
+    static public function IsInitialized(): bool {
+        return self::$Initialized;
+    }
+
+    /** @phpstan-ignore method.unused */
+	static private function LoadECoreClass(string $class) {
 		if (in_array($class, self::$LoadedECoreClasses))
 			return true;
 
 		$class_array = explode('\\', $class);
 		$class_array_length = count($class_array);
 
-		if ($class_array_length < 1)
-			return false;
+		// if ($class_array_length < 1)
+		// 	return false;
 
 		if ($class_array[0] !== 'EC')
 			return false;
@@ -178,21 +181,21 @@ class Espada {
 		exit();
 	}
 
-	static public function Redirect($uri, $http_response_code = 303) {
+	static public function Redirect(string $uri, $httpResponseCode = 303) {
 		self::Deinitialize();
 
-		header('Location: ' . $uri, TRUE, $http_response_code);
+		header('Location: ' . $uri, TRUE, $httpResponseCode);
 		exit();
 	}
 
-	static private function GetPageFilePath($page_path) {
-		$page_path_array = explode(':', $page_path);
-		if (count($page_path_array) !== 2)
-			throw new \Exception('Wrong page file path format:' . $page_path);
+	// static private function GetPageFilePath($page_path) {
+	// 	$page_path_array = explode(':', $page_path);
+	// 	if (count($page_path_array) !== 2)
+	// 		throw new \Exception('Wrong page file path format:' . $page_path);
 
-		return \E\Package::Path($page_path_array[0],
-				'pages/' . $page_path_array[1] . '.php');
-	}
+	// 	return \E\Package::Path($page_path_array[0],
+	// 			'pages/' . $page_path_array[1] . '.php');
+	// }
 
 	static public function SetPage(\E\Page $page) {
 		if (self::$Instance !== null)
@@ -207,10 +210,12 @@ class Espada {
 	}
 
 
-	private $pagePath;
-	private $site;
+	// private $pagePath;
+	private ?E\Site $site;
 
 	private function __construct() {
+        $this->site = null;
+
 		self::$Instance = $this;
 
 		set_exception_handler('\E\Exception::ExceptionHandler');
@@ -252,12 +257,11 @@ class Espada {
 		// $layout->display();
 	}
 
-	public function getPagePath() {
-		return $this->pagePath;
-	}
+	// public function getPagePath() {
+	// 	return $this->pagePath;
+	// }
 
-	private function requirePage($page_path) {
-		require($page_path);
-	}
-
+	// private function requirePage($pagePath) {
+	// 	require($pagePath);
+	// }
 }

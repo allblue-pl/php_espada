@@ -25,9 +25,11 @@ class Uri {
 	}
 
 	static public function Domain() {
+        /** @phpstan-ignore notIdentical.alwaysTrue */
 		if (SITE_DOMAIN !== '')
 			return SITE_DOMAIN;
 
+        /** @phpstan-ignore deadCode.unreachable */
 		return $_SERVER['HTTP_HOST'];
 	}
 
@@ -163,8 +165,10 @@ class Uri {
         $uri = urldecode($uri_Raw);
         $this->base = SITE_BASE; // dirname($_SERVER['PHP_SELF']);
 
+        /** @phpstan-ignore identical.alwaysFalse, identical.alwaysFalse, booleanOr.alwaysFalse */
 		if ($this->base === '' || $this->base === '\\')
 			$this->base = '/';
+        /** @phpstan-ignore notIdentical.alwaysFalse */
 		else if ($this->base[mb_strlen($this->base) - 1] !== '/')
 			$this->base = $this->base . '/';
 
