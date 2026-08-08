@@ -1,15 +1,32 @@
 <?php namespace E;
+
+use Exception;
+
 defined('_ESPADA') or die(NO_ACCESS);
 
+/**
+ * @package E
+ * @phpstan-import-type T_PageArgs from Page
+ */
 
 class Pages {
-	static private ?Pages $Instance = null;
+	static private Pages|null $Instance = null;
 
-	static public function Get(string $pageName = '', string $langName = ''): ?Page {
-		$langName = Langs::Get($langName)['name'];
+	static public function Get(string $pageName = '', string $langName = ''): Page|null {
+        assert(self::$Instance !== null);
 
-		if ($pageName === '')
+        $lang = Langs::Get($langName);
+        if ($lang === null)
+            throw new \Exception("Lang '{$langName}' does not exist.");
+
+		$langName = $lang['name'];
+
+		if ($pageName === '') {
+            if (self::$Instance->currentPageName === null)
+                throw new \Exception("Page not set.");
+
 			$pageName = self::$Instance->currentPageName;
+        }
 
 		if (!isset(self::$Instance->pages[$pageName]))
 			return null;
@@ -17,8 +34,18 @@ class Pages {
 		return self::$Instance->pages[$pageName];
     }
     
+    /**
+     * @param string $langName 
+     * @return list<Page> 
+     */
     static public function GetAll(string $langName = ''): array {
-        $langName = Langs::Get($langName)['name'];
+        assert(self::$Instance !== null);
+
+        $lang = Langs::Get($langName);
+        if ($lang === null)
+            throw new \Exception("Lang '{$langName}' does not exist.");
+
+        $langName = $lang['name'];
 
         $pages = [];
         foreach (self::$Instance->pages as $page) {
@@ -31,17 +58,25 @@ class Pages {
     }
 
 	static public function GetName(): string {
-		return self::Get('')->getName();
+        $page = self::Get('');
+        if ($page === null)
+            throw new \Exception("No default page set.");
+
+		return $page->getName();
 	}
 
 
 	private Langs $langs;
+    /** @var array<string, Page> */
 	private array $pages;
+    /** @var array<string, array<string, PageAlias>> */
 	private array $pagesAliases;
 
-	private ?string $currentPageName;
+	private string|null $currentPageName;
 
+    /** @var array<string, string> */
 	private array $errorPageNames;
+    /** @var array<string, string> */
 	private array $notFoundPageNames;
 
 
@@ -73,6 +108,13 @@ class Pages {
 		$this->parseUri($uri, $args_offset);
 	}
 
+    /**
+     * @param string $name 
+     * @param string $path 
+     * @param T_PageArgs $args 
+     * @return SitePage 
+     * @throws Exception 
+     */
 	public function addPage(string $name, string $path, array $args): SitePage {
 		if (isset($this->pages[$name]))
 			throw new \Exception("Page `{$name}` already exists.");
@@ -81,9 +123,8 @@ class Pages {
             throw new \Exception("Page name cannot be empty.");
 
 		$this->pagesAliases[$name] = [];
-
-		$this->pages[$name] = new Page($name, $path, $args,
-				$this->pagesAliases[$name]);
+		$this->pages[$name] = new Page($name, $path, $args, 
+                $this->pagesAliases[$name]);
 
 		return new SitePage($this, $name);
 	}
@@ -99,7 +140,7 @@ class Pages {
         $this->pagesAliases[$pageName][$lang['name']] = $page_alias;
 	}
 
-    public function getErrorPageName(string $langName): ?string {
+    public function getErrorPageName(string $langName): string|null {
         if (!array_key_exists($langName, $this->errorPageNames))
             return null;
 
@@ -108,23 +149,26 @@ class Pages {
 
 	private function parseUri(Uri $uri, int $argsOffset): void {
 		$lang = Langs::Get();
+        if ($lang === null)
+            throw new \Exception("Default lang not set.");
+
 		$langName = $lang['name'];
 
 		$args = $uri->getArgs();
 		$args = array_splice($args, $argsOffset);
 
-		foreach ($this->pagesAliases as $pageName => $page_aliases) {
-			if (!isset($page_aliases[$langName]))
+		foreach ($this->pagesAliases as $pageName => $pageAliases) {
+			if (!isset($pageAliases[$langName]))
 				continue;
 
-			$alias = $page_aliases[$langName];
+			$alias = $pageAliases[$langName];
 
-			$uri_args = $alias->checkUriArgs($args);
-			if ($uri_args === null)
+			$uriArgs = $alias->checkUriArgs($args);
+			if ($uriArgs === null)
 				continue;
 
 			$page = $this->pages[$pageName];
-			new Args($page->getArgs(), $uri_args);
+			new Args($page->getArgs(), $uriArgs);
 
 			$this->currentPageName = $pageName;
 
@@ -133,7 +177,7 @@ class Pages {
 
 		header('HTTP/1.0 404 Not Found');
 
-		if (isset($this->notFoundPages[$langName])) {
+		if (isset($this->notFoundPageNames[$langName])) {
 			$this->currentPageName = $this->notFoundPageNames[$langName];
 			return;
 		}
@@ -146,6 +190,9 @@ class Pages {
 			throw new \Exception("Page `{$pageName}` does not exist.");
 
 		$lang = $this->langs->getLang($langName);
+        if ($lang === null)
+            throw new \Exception("Cannopt get lang '{langName}'.");
+
 		$this->errorPageNames[$lang['name']] = $pageName;
 	}
 
@@ -154,6 +201,9 @@ class Pages {
 			throw new \Exception("Page `{$pageName}` does not exist.");
 
 		$lang = $this->langs->getLang($langName);
+        if ($lang === null)
+            throw new \Exception("Cannopt get lang '{$langName}'.");
+
 		$this->notFoundPageNames[$lang['name']] = $pageName;
 	}
 

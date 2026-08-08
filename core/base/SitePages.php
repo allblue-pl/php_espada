@@ -1,6 +1,10 @@
 <?php namespace E;
 defined('_ESPADA') or die(NO_ACCESS);
 
+/**
+ * @phpstan-import-type T_PageArgs from Page
+ */
+
 class SitePages {
     private Langs $langs;
     private Pages $pages;
@@ -19,11 +23,17 @@ class SitePages {
         $this->langs->add($name, $alias, $code, $ltr);
     }
 
-    public function notFound(string $pageName, array $args = [], 
-            string $langName = ''): void {
+    public function notFound(string $pageName, string $langName = ''): void {
         $this->pages->setNotFoundPage($langName, $pageName);
     }
 
+    /**
+     * 
+     * @param string $name 
+     * @param string $path 
+     * @param T_PageArgs $args 
+     * @return SitePage 
+     */
     public function page(string $name, string $path, array $args = []): SitePage {
         return $this->pages->addPage($name, $path, $args);
     }

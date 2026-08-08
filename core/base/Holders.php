@@ -1,16 +1,28 @@
 <?php namespace E;
 defined('_ESPADA') or die(NO_ACCESS);
 
+/**
+ * @phpstan-type T_HolderLayoutsArr array<string, list<Layout>>
+ */
 
 class Holders {
     private Site $site;
-    private array $holders;
+    /** @var T_HolderLayoutsArr */
+    private array $holderLayoutsArr;
+    /** @var array<string, bool> */
     private array $holders_Displayed;
 
-    public function __construct(Site $site, array $holders, 
+    /**
+     * 
+     * @param Site $site 
+     * @param T_HolderLayoutsArr $holderLayoutsArr 
+     * @param array<string, bool> &$holders_displayed 
+     * @return void 
+     */
+    public function __construct(Site $site, array $holderLayoutsArr, 
             array &$holders_displayed) {
         $this->site = $site;
-        $this->holders = $holders;
+        $this->holderLayoutsArr = $holderLayoutsArr;
         $this->holders_Displayed = &$holders_displayed;
     }
 
@@ -19,7 +31,7 @@ class Holders {
     }
 
     public function view(string $holderName): void {
-        if (!isset($this->holders[$holderName])) {
+        if (!isset($this->holderLayoutsArr[$holderName])) {
             /* @phpstan-ignore if.alwaysTrue */
             if (EDEBUG)
                 Notice::Add("Empty holder `{$holderName}`.");
@@ -35,7 +47,7 @@ class Holders {
         //     die;
         // }
 
-        foreach ($this->holders[$holderName] as $layout)
+        foreach ($this->holderLayoutsArr[$holderName] as $layout)
             $layout->display($this->site);
         $this->holders_Displayed[$holderName] = true;
     }

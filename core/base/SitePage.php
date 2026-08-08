@@ -11,7 +11,7 @@ class SitePage {
         $this->name = $name;
     }
 
-    public function alias(string $arg1, ?string $arg2 = null): SitePage {
+    public function alias(string $arg1, string|null $arg2 = null): SitePage {
         $langName = null;
         $uri = null;
         if ($arg2 === null) {

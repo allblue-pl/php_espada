@@ -27,7 +27,7 @@ class Path {
 		return file_exists($fsFilePath);
 	}
 
-	static public function File(string $ePath): string {
+	static public function File(string $ePath): string|null {
 		return File::Path($ePath);
 	}
 

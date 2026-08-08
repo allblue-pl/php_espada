@@ -1,11 +1,20 @@
 <?php namespace E;
 
-use Closure;
+use Exception;
 
 defined('_ESPADA') or die(NO_ACCESS);
 
+/**
+ * @phpstan-type T_LayoutFields array<string, mixed>|\Closure(): array<string, mixed>
+ */
+
 class Layout implements ILayout {
-    static public function _(string $layoutPath, array|Closure $fields = []): Layout {
+    /**
+     * @param string $layoutPath 
+     * @param null|T_LayoutFields $fields 
+     * @return Layout 
+     */
+    static public function _(string $layoutPath, array|null|\Closure $fields = null): Layout {
         return new Layout($layoutPath, $fields);
     }
 
@@ -39,23 +48,32 @@ class Layout implements ILayout {
     }
 
 
-    private ?string $filePath;
-    private array|Closure $fields;
+    private string|null $filePath;
+    /** @var T_LayoutFields|null */
+    private array|\Closure|null $fields;
 
-    private array $holders;
+    /** @var array<string, list<Layout>> */
+    private array $holderLayouts;
+    /** @var array<string, bool> */
     private array $holders_Displayed;
 
     private bool $validated;
 
-    public function __construct(?string $layoutPath = null, 
-            array|Closure $fields = []) {
+    /**
+     * 
+     * @param null|string $layoutPath 
+     * @param T_LayoutFields|null $fields 
+     * @return void 
+     */
+    public function __construct(string|null $layoutPath = null, 
+            array|\Closure|null $fields = []) {
         if ($layoutPath !== null)
             $this->setPath($layoutPath);
 
         $this->filePath = null;
         $this->fields = $fields;
 
-        $this->holders = [];
+        $this->holderLayouts = [];
         $this->holders_Displayed = [];
 
         $this->validated = false;
@@ -65,12 +83,12 @@ class Layout implements ILayout {
         // if ($this->postInitialized)
         //     throw new \Exception('Cannot add layout after initialization.');
 
-        if (!isset($this->holders[$holderName])) {
-            $this->holders[$holderName] = [];
+        if (!isset($this->holderLayouts[$holderName])) {
+            $this->holderLayouts[$holderName] = [];
             $this->holders_Displayed[$holderName] = false;
         }
 
-        $this->holders[$holderName][] = $layout;
+        $this->holderLayouts[$holderName][] = $layout;
 
         return $layout;
     }
@@ -78,14 +96,25 @@ class Layout implements ILayout {
     final public function display(Site $site): void {
         $this->_preDisplay($site);
 
-        $fields = $this->getFields();
+        $fields = &$this->fields;
 
-        $this->validate($fields);
+        $this->validate();
+        assert($fields !== null);
 
-        $fieldsArray = is_callable($this->fields) ? $fields() : $fields;
+        if ($fields instanceof \Closure) {
+            /**   */
+            $fieldsArray = $fields();
+        } else
+            $fieldsArray = $fields;
+
         $fields = Fields::_($fieldsArray);
-        $holders = new Holders($site, $this->holders, $this->holders_Displayed);
+        $holders = new Holders($site, $this->holderLayouts, $this->holders_Displayed);
         $layoutViewer = new LayoutViewer($fields, $holders);
+
+        if ($this->filePath === null) {
+            $childClass = get_called_class();
+            throw new \Exception("File path not set in layout: '{$childClass}'");
+        }
 
         self::RequireFile($this->filePath, $layoutViewer, $holders, $fields);
 
@@ -103,18 +132,43 @@ class Layout implements ILayout {
     //             $layout->preInitialize();
     // }
 
+    /**
+     * @return array<string, mixed>
+     * @throws Exception 
+     */
     final public function &getFields(): array {
+        if ($this->fields === null)
+            throw new \Exception("Fields not set.");
+
+        if ($this->fields instanceof \Closure)
+            throw new \Exception("Cannot get fields of 'Closure' type.");
+
         if ($this->validated)
             throw new \Exception('Cannot modify layout after validation.');
 
         return $this->fields;
     }
 
+    /**
+     * 
+     * @param array<string, mixed> $fields 
+     * @return void 
+     * @throws Exception 
+     */
     final public function setFields(array $fields): void {
+        if ($this->fields === null)
+             throw new \Exception("Fields not set.");
+
+        if ($this->fields instanceof \Closure)
+            throw new \Exception("Cannot set fields of 'Closure' type.");
+
         if ($this->validated)
             throw new \Exception('Cannot modify layout after validation.');
 
-        $this->fields = array_replace_recursive($this->fields, $fields);
+        /** @var array<string, mixed> */
+        $fields_New = array_replace_recursive($this->fields, $fields);
+
+        $this->fields = $fields_New;
     }
 
     final public function setPath(string $layoutPath): void {
@@ -131,13 +185,13 @@ class Layout implements ILayout {
             throw new \Exception("Layout path `{$layoutPath}` does not exist.");
     }
 
-    final public function validate(?array $fields): void {
+    final public function validate(): void {
         $child_class = get_called_class();
 
         if ($this->filePath === null)
             throw new \Exception("Layout `path` not set in `{$child_class}`.");
 
-        if ($fields === null)
+        if ($this->fields === null)
             throw new \Exception("Layout `fields` not set in {$child_class}.");
 
         $this->validated = true;

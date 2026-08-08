@@ -1,20 +1,46 @@
 <?php namespace E;
 defined("_ESPADA") or die(NO_ACCESS);
 
-class Langs {
-	static private ?Langs $Instance = null;
+/**
+ * @phpstan-type T_LangInfo array{
+ *   name: string,
+ *   alias: string,
+ *   code: string,
+ *   ltr: bool,
+ * }
+ */
 
-	static public function Get(string $langName = ""): ?array {
+class Langs {
+	static private Langs|null $Instance = null;
+
+    /**
+     * @param string $langName 
+     * @return T_LangInfo|null
+     */
+	static public function Get(string $langName = ""): array|null {
+        assert(self::$Instance !== null);
+
 		if ($langName === "")
 			$langName = self::$Instance->currentLangName;
+
+        if ($langName === null)
+            throw new \Exception("Langueage not set.");
 
 		return self::$Instance->getLang($langName);
     }
     
+    /**
+     * @return array<T_LangInfo>
+     */
     static public function GetAll(): array {
+        assert(self::$Instance !== null);
+
         return self::$Instance->langs;
     }
 
+    /**
+     * @return list<string>
+     */
     static public function GetAllNames(): array {
         $langNames = [];
         foreach (self::GetAll() as $lang) {
@@ -24,14 +50,18 @@ class Langs {
         return $langNames;
     }
 
-    static public function GetName(): string {
-        return self::Get()["name"];
+    static public function GetName(string $langName = ""): string {
+        $langInfo = self::Get($langName);
+        if ($langInfo === null)
+            throw new \Exception("Language not set.");
+
+        return $langInfo["name"];
     }
 
-
+    /** @var array<T_LangInfo> */
 	private array $langs;
-	private ?string $defaultLangName;
-	private ?string $currentLangName;
+	private string|null $defaultLangName;
+	private string|null $currentLangName;
 
 	public function __construct() {
 		if (self::$Instance !== null)
@@ -60,7 +90,11 @@ class Langs {
 			$this->defaultLangName = $langName;
 	}
 
-	public function getLang(string $langName = ""): ?array {
+    /**
+     * @param string $langName 
+     * @return null|T_LangInfo
+     */
+	public function getLang(string $langName = ""): array|null {
 		if ($langName === "")
 			$langName = $this->defaultLangName;
 

@@ -1,6 +1,10 @@
 <?php namespace E;
 defined('_ESPADA') or die(NO_ACCESS);
 
+/**
+ * @phpstan-import-type T_HolderLayoutsArr from Holders
+ * @phpstan-type T_SiteListener callable(Site): void
+ */
 
 class Site implements ILayout {
 	private bool $preDisplayed = false;
@@ -9,18 +13,22 @@ class Site implements ILayout {
 	// private $postInitialized = false;
 
 	private Modules $siteModules;
-	private ?Layout $rootLayout = null;
+	private Layout|null $rootLayout = null;
 
-	private array $holders;
+    /** @var T_HolderLayoutsArr */
+	private array $holderLayouts;
 
+    /** @var array<T_SiteListener> */
 	private array $listeners_PreInitialize;
+    /** @var array<T_SiteListener> */
 	private array $listeners_PostInitialize;
 
+    /** @var array<T_SiteListener> */
     private array $listeners_PreDisplay;
 
 
 	public function __construct() {
-        $this->holders = [];
+        $this->holderLayouts = [];
 
         $this->listeners_PreInitialize = [];
         $this->listeners_PostInitialize = [];
@@ -32,9 +40,9 @@ class Site implements ILayout {
 
 
 	final public function addL(string $holderName, Layout $layout): Layout {
-		if (!isset($this->holders[$holderName]))
-			$this->holders[$holderName] = [];
-		$this->holders[$holderName][] = $layout;
+		if (!isset($this->holderLayouts[$holderName]))
+			$this->holderLayouts[$holderName] = [];
+		$this->holderLayouts[$holderName][] = $layout;
 
 		return $layout;
 	}
@@ -62,7 +70,7 @@ class Site implements ILayout {
 	}
 
 	final public function display(): void {
-		if ($this->rootLayout === null)
+        if ($this->rootLayout === null)
             throw new \Exception('Root layout not set.');
 
         $this->_preDisplay();
@@ -74,7 +82,10 @@ class Site implements ILayout {
         foreach ($this->listeners_PreDisplay as $listener)
             $listener($this);
 
-		foreach ($this->holders as $holder_name => $layouts) {
+        if ($this->rootLayout === null)
+            throw new \Exception('Root layout not set.');
+
+		foreach ($this->holderLayouts as $holder_name => $layouts) {
 			foreach ($layouts as $l) {
 				$this->rootLayout->addL($holder_name, $l);
 			}

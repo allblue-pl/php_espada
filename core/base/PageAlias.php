@@ -1,8 +1,20 @@
 <?php namespace E;
 defined('_ESPADA') or die(NO_ACCESS);
 
+/**
+ * @phpstan-type T_UriArgInfo array{
+ *   name: string,
+ *   type: "arg"|"ext"|"text",
+ *   value: string,
+ * }|list<string>
+ * @phpstan-type T_UriArgs array{
+ *   extra: list<string>,
+ *   args: array<string, string>,
+ * }
+ */
 
 class PageAlias {
+    /** @var array<T_UriArgInfo> */
     private array $args;
 
     public function __construct(string $uri) {
@@ -10,28 +22,36 @@ class PageAlias {
         $this->parseUri($uri);
     }
 
-    public function checkUriArgs(array $args): ?array {
-        $args_length = count($this->args);
+    /**
+     * 
+     * @param list<string> $args 
+     * @return null|T_UriArgs
+     */
+    public function checkUriArgs(array $args): array|null {
+        $args_Length = count($this->args);
 
-        $extra_args = false;
-        if ($args_length > 0) {
-            $last_arg = $this->args[$args_length - 1];
-            if ($last_arg['type'] === 'ext') {
-                $extra_args = true;
-                $args_length--;
+        $extraArgs = false;
+        if ($args_Length > 0) {
+            $lastArg = $this->args[$args_Length - 1];
+            if ($lastArg['type'] === 'ext') {
+                $extraArgs = true;
+                $args_Length--;
             }
         }
 
-        if (!$extra_args) {
-            if ($args_length !== count($args))
+        if (!$extraArgs) {
+            if ($args_Length !== count($args))
                 return null;
         } else {
-            if ($args_length > count($args))
+            if ($args_Length > count($args))
                 return null;
         }
 
-        $uri_args = [];
-        for ($i = 0; $i < $args_length; $i++) {
+        $uriArgs = [
+            "extra" => null,
+            "args" => [],
+        ];
+        for ($i = 0; $i < $args_Length; $i++) {
             $arg = $this->args[$i];
 
             if ($arg['type'] === 'text') {
@@ -42,46 +62,52 @@ class PageAlias {
             }
 
             if ($arg['type'] === 'arg') {
-                $uri_args[$arg['name']] = $args[$i];
+                $uriArgs["args"][$arg['name']] = $args[$i];
 
                 continue;
             }
 
-            if ($arg['type'] === 'ext')
-                continue;
+            // if ($arg['type'] === 'ext')
+            //     continue;
         }
+        $uriArgs["extra"] = array_splice($args, $args_Length);
 
-        $uri_args['_extra'] = array_splice($args, $args_length);
-
-        return $uri_args;
+        return $uriArgs;
     }
 
+    /**
+     * @return array<T_UriArgInfo>
+     */
     public function getParts(): array {
         return $this->args;
     }
 
     private function parseUri(string $uri): void {
-        $uri_array = explode('/', $uri);
+        $uriArray = explode('/', $uri);
 
         $this->args = [];
-        if (count($uri_array) === 1)
-            if ($uri_array[0] === '')
+        if (count($uriArray) === 1)
+            if ($uriArray[0] === '')
                 return;
 
-        foreach ($uri_array as $uri_part) {
+        foreach ($uriArray as $uri_part) {
             if ($uri_part[0] === ':') {
                 $this->args[] = [
                     'type' => 'arg',
-                    'name' => substr($uri_part, 1)
+                    'name' => substr($uri_part, 1),
+                    'value' => "",
                 ];
             } else if ($uri_part === '*') {
                 $this->args[] = [
-                    'type' => 'ext'
+                    'type' => 'ext',
+                    'name' => "",
+                    'value' => "",
                 ];
             } else {
                 $this->args[] = [
                     'type' => 'text',
-                    'value' => $uri_part
+                    'name' => "",
+                    'value' => $uri_part,
                 ];
             }
         }

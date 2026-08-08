@@ -32,8 +32,9 @@ require(__DIR__."/helpers/Uri.php");
 
 
 class Espada {
-	static private ?Espada $Instance = null;
+	static private Espada|null $Instance = null;
 	static private bool $Initialized = false;
+    /** @var list<string> */
 	static private array $LoadedECoreClasses = [];
 
 	static public function ChangePage(string $pageName): void {
@@ -62,8 +63,12 @@ class Espada {
 	}
 
 	static public function Initialize(\E\Site $site): void {
-		if (PREINIT_CONTENTS !== '')
+        assert(self::$Instance !== null);
+
+		if (PREINIT_CONTENTS !== '') {
+            /** @phpstan-ignore argument.type */
 			E\Notice::Add(PREINIT_CONTENTS);
+        }
 
 		if (self::$Instance->site !== null)
 			throw new \Exception("Espada already initialized.");
@@ -203,6 +208,8 @@ class Espada {
 
 		require($page->getFilePath());
 
+        assert(self::$Instance !== null);
+
 		self::$Instance->display();
 		self::Deinitialize();
 
@@ -211,7 +218,7 @@ class Espada {
 
 
 	// private $pagePath;
-	private ?E\Site $site;
+	private E\Site|null $site;
 
 	private function __construct() {
         $this->site = null;
@@ -231,21 +238,31 @@ class Espada {
 			mkdir(PATH_CACHE, 0700, true);
 		if (!\E\File::Exists(PATH_TMP))
 			mkdir(PATH_TMP, 0700, true);
+        
+        /** @var string */
+        $requestUri = $_SERVER['REQUEST_URI'];
 
-		$e_uri = new \E\Uri($_SERVER['REQUEST_URI']);
-		if ($e_uri->getUri() !== urldecode($_SERVER['REQUEST_URI'])) {
-            header('Location: ' . $e_uri->getUri(), TRUE, 303);
+		$eUri = new \E\Uri($requestUri);
+
+		if ($eUri->getUri() !== urldecode($requestUri)) {
+            header('Location: ' . $eUri->getUri(), TRUE, 303);
 		    exit();
         }
 
         $e_langs = new \E\Langs();
-		$e_pages = new \E\Pages($e_langs, $e_uri);
+		$e_pages = new \E\Pages($e_langs, $eUri);
 
 		/* Page Path */
-		self::SetPage(\E\Pages::Get());
+        $page = \E\Pages::Get();
+        if ($page === null)
+            throw new \Exception("No default page set.");
+
+		self::SetPage($page);
 	}
 
 	public function display(): void {
+        assert(self::$Instance !== null);
+
 		if (self::$Instance->site === null)
 			throw new \Exception('\E\Site has not been initialized.');
 

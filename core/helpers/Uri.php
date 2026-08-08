@@ -1,11 +1,20 @@
 <?php namespace E;
+
+use Exception;
+
 defined('_ESPADA') or die(NO_ACCESS);
 
+/**
+ * @phpstan-import-type T_UriArgs from PageAlias
+ * @package E
+ */
 
 class Uri {
-	static private ?Uri $Instance = null;
+	static private Uri|null $Instance = null;
 
 	static public function Base(bool $pathOnly = true): string {
+        assert(self::$Instance !== null);
+
 		if ($pathOnly)
 			return self::$Instance->base;
 
@@ -35,8 +44,10 @@ class Uri {
 
 	static public function File(string $path, bool $pathOnly = true): string {
 		$fileUri = Package::Uri_FromPath($path, 'front', '');
-		if ($fileUri === null)
+		if ($fileUri === null) {
 			Notice::Add("Cannot find front file: {$path}.");
+            $fileUri = "#";
+        }
 
 		if ($pathOnly)
 			return $fileUri;
@@ -44,7 +55,7 @@ class Uri {
 		return self::Domain() . $fileUri;
 	}
 
-	static public function Media(string $packageName, string $filePath): ?string {
+	static public function Media(string $packageName, string $filePath): string|null {
 		$packageName = mb_strtolower($packageName);
 		$fs_file_path = PATH_MEDIA . '/' . $packageName . '/' . $filePath;
 
@@ -54,17 +65,31 @@ class Uri {
 		return URI_MEDIA . $packageName . '/' . $filePath;
 	}
 
-	static public function Page(?string $pageName = null, ?array $uriArgs = null,
-			string $langName = '', bool $pathOnly = true, bool $includeBase = true): bool {
+    /**
+     * 
+     * @param string|null $pageName 
+     * @param T_UriArgs|null $uriArgs 
+     * @param string $langName 
+     * @param bool $pathOnly 
+     * @param bool $includeBase 
+     * @return string 
+     * @throws Exception 
+     */
+	static public function Page(string|null $pageName = null, array|null $uriArgs = null,
+			string $langName = '', bool $pathOnly = true, bool $includeBase = true): string {
 		if ($pageName === null) {
-			$pageName = Pages::Get()->getName();
+			$pageName = Pages::GetName();
 
 			if ($uriArgs === null)
 				$uriArgs = Args::Uri_All();
 		}
 
-		if ($uriArgs === null)
-			$uriArgs = [];
+		if ($uriArgs === null) {
+			$uriArgs = [
+                "args" => [],
+                "extra" => [],
+            ];
+        }
 
 		$page = Pages::Get($pageName);
 
@@ -88,10 +113,10 @@ class Uri {
 		return $uri . $pageUri;
     }
     
-    static public function Page_Raw($pageName = null, $langName = '', 
-            $pathOnly = true, $includeBase = true) {
+    static public function Page_Raw(string|null $pageName = null, string $langName = '', 
+            bool $pathOnly = true, bool $includeBase = true): string {
         if ($pageName === null)
-			$pageName = Pages::Get()->getName();
+			$pageName = Pages::GetName();
 
 		$page = Pages::Get($pageName);
 
@@ -115,30 +140,40 @@ class Uri {
 		return $uri . $pageUri;
     }
 
-	static public function Pages($pageNames) {
+    /**
+     * @param list<string> $pageNames 
+     * @return list<string> 
+     */
+	static public function Pages(array $pageNames): array {
 		$uris = [];
 
-		foreach ($pageNames as $key => $pageName)
-			$uris[$key] = self::Page($pageName);
+		foreach ($pageNames as $pageName)
+			$uris[] = self::Page($pageName);
 
 		return $uris;
 	}
 
-    static public function Protocol() {
+    static public function Protocol(): string {
         if (mb_strpos(self::Domain(), 'https://'))
                 return 'https://';
 
         return 'http://';
     }
 
-	static public function Site($pathOnly = true) {
+	static public function Site(bool $pathOnly = true): string {
+        assert(self::$Instance !== null);
+
 		if ($pathOnly)
 			return self::$Instance->uri;
 
 		return self::Domain() . self::$Instance->uri;
     }
     
-    static public function Query($getArgs) {
+    /**
+     * @param array<string, string> $getArgs 
+     * @return string 
+     */
+    static public function Query(array $getArgs): string {
         $query = '';
 
         $first = true;
@@ -151,11 +186,12 @@ class Uri {
     }
 
 
-	private $base;
-	private $args;
-	private $uri;
+	private string $base;
+    /** @var list<string> */
+	private array $args;
+	private string $uri;
 
-	public function __construct($uri_Raw) {
+	public function __construct(string $uri_Raw) {
 		if (self::$Instance !== null)
 			throw new \Exception("Uri already created.");
 
@@ -188,27 +224,30 @@ class Uri {
         $this->uri = $this->base . implode('/', $this->args) . $query;
 	}
 
-	public function getArg($index) {
+	public function getArg(int $index): string|null {
 		if (isset($this->args[$index]))
 			return $this->args[$index];
 
 		return null;
 	}
 
-	public function getArgs() {
+    /**
+     * @return list<string> 
+     */
+	public function getArgs(): array {
 		return $this->args;
 	}
 
-	public function getArgs_Length() {
+	public function getArgs_Length(): int {
 		return count($this->args);
 	}
 
-    public function getUri() {
+    public function getUri(): string {
         return $this->uri;
     }
 
 
-    private function parseArg($arg_Raw) {
+    private function parseArg(string $arg_Raw): string {
         $arg = "";
         $allowedChars = 'qwertyuiopasdfghjklzxcvbnm' . 
                 'QWERTYUIOPASDFGHJKLZXCVBNM' . 

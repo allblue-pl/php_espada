@@ -1,10 +1,22 @@
 <?php namespace E;
+
+use Exception;
+
 defined('_ESPADA') or die(NO_ACCESS);
 
+/**
+ * @phpstan-type T_PackagePath array{
+ *   name: string,
+ *   path: string,
+ * }
+ * @phpstan-type T_PackageOverwrites array<string, array<string, array<string>>>
+ * @package E
+ */
 
 class Package {
-
-    static private ?array $PackagePaths = null;
+    /** @var array<T_PackagePath>|null */
+    static private array|null $PackagePaths = null;
+    /** @var T_PackageOverwrites */
     static private array $Overwrites = [];
 
     // static public function Details($filePath, $noOverwrites = false) {
@@ -52,7 +64,7 @@ class Package {
     // }
 
     static public function Path(string $package, string $path, 
-            bool $noOverwrites = false): ?string {
+            bool $noOverwrites = false): string|null {
         $filePath = $package . '/' . $path;
         // if ($package === 'site') {
         //     if (File::Exists(PATH_ESITE . '/' . $filePath))
@@ -82,20 +94,19 @@ class Package {
     }
 
     static public function Path_FromPath(string $path, string $dir = '',
-            string $ext = ''): string {
-        $path_array = explode(':', $path);
-        if (count($path_array) !== 2)
+            string $ext = ''): string|null {
+        $pathArray = explode(':', $path);
+        if (count($pathArray) !== 2)
             throw new \Exception("Wrong path `{$path}` format.");
 
         if ($dir !== '')
             $dir .= '/';
 
-        return self::Path($path_array[0],
-                $dir . $path_array[1] . $ext);
+        return self::Path($pathArray[0], $dir . $pathArray[1] . $ext);
     }
 
     static public function Uri(string $package, string $path, 
-            bool $noOverwrites = false): ?string {
+            bool $noOverwrites = false): string|null {
         $filePath = $package . '/' . $path;
 
         // if ($package === 'site') {
@@ -124,7 +135,7 @@ class Package {
     }
 
     static public function Uri_FromPath(string $path, string $dir, string $ext): 
-            ?string {
+            string|null {
         $pathArray = explode(':', $path);
         if (count($pathArray) !== 2)
             throw new \Exception("Wrong path `{$path}` format.");
@@ -145,10 +156,12 @@ class Package {
 		      array_unshift(self::$Overwrites[$fromPackage][$toPackage], $path);
 	}
 
-    static public function UnOverwrite(string $fromPackage, ?string $toPackage = null):
+    static public function UnOverwrite(string $fromPackage, string|null $toPackage = null):
             void {
-        if ($toPackage === null)
+        if ($toPackage === null) {
             unset(self::$Overwrites[$fromPackage]);
+            return;
+        }
 
         if (!isset(self::$Overwrites[$fromPackage][$toPackage]))
             return;
@@ -158,7 +171,10 @@ class Package {
             unset(self::$Overwrites[$fromPackage]);
     }
 
-
+    /**
+     * @return array<T_PackagePath> 
+     * @throws Exception 
+     */
     static private function GetPackagePaths(): array {
         if (self::$PackagePaths !== null)
             return self::$PackagePaths;

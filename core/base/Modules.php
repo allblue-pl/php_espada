@@ -3,7 +3,7 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 
 class Modules {
-    /** @var array<Module> */
+    /** @var list<Module> */
 	private array $modules_Ordered;
 
 

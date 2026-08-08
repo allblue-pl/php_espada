@@ -2,13 +2,23 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 class Fields { // implements \Iterator
+    /**
+     * @param array<string, mixed> $fields 
+     * @return Fields 
+     */
 	static public function _(array $fields = []): Fields {
 		return new Fields($fields);
 	}
 
 
+    /** @var array<string, mixed> */
 	private array $fields;
 
+
+    /**
+     * @param array<string, mixed> $fields 
+     * @return void 
+     */
 	public function __construct(array $fields = []) {
 		$this->fields = $fields;
 	}
@@ -34,27 +44,35 @@ class Fields { // implements \Iterator
 		return $this->fields[$fieldName];
     }
 
+    /**
+     * @return array<string, mixed> 
+     */
 	public function getRootFields(): array {
 		return $this->fields;
 	}
 
-	public function push(mixed $value): void {
-		$this->fields[] = $value;
-	}
-
+    /**
+     * @param array<string, mixed> $array 
+     * @return void 
+     */
 	public function set(array $array): void {
 		$this->fields = $array;
 	}
 
-	public function setSelected(array $array, array $fieldNames): void {
-		foreach ($fieldNames as $field_name) {
-			if (!isset($array[$field_name])) {
-				Notice::Add("No `{$field_name}` in array.");
-				$this->$field_name = null;
+    /**
+     * @param array<string, mixed> $fields 
+     * @param list<string> $fieldNames 
+     * @return void 
+     */
+	public function setSelected(array $fields, array $fieldNames): void {
+		foreach ($fieldNames as $fieldName) {
+			if (!isset($fields[$fieldName])) {
+				Notice::Add("No `{$fieldName}` in array.");
+				$this->$fieldName = null;
 				continue;
 			}
 
-			$this->$field_name = $array[$field_name];
+			$this->$fieldName = $fields[$fieldName];
 		}
 	}
 

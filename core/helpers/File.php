@@ -6,6 +6,9 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 
 class File {
+    /**
+     * @var array<string, string>
+     */
 	static private array $MIME_TYPES = [
         'csv' => 'text/csv',
         'txt' => 'text/plain',
@@ -74,10 +77,15 @@ class File {
 		if (!self::Exists($filePath))
 			throw new \Exception("File `{$filePath}` does not exist.");
 
-		return file_get_contents($filePath);
-	}
+		$content = file_get_contents($filePath);
+        if ($content === false)
+            throw new \Exception("Cannot read `{$filePath}` does not exist.");
 
-	static public function NotFound(?string $errorMessage = null): void {
+        return $content;
+    }
+        
+
+	static public function NotFound(string|null $errorMessage = null): void {
         \Espada::NotFound($errorMessage === null ? '' : $errorMessage);
 	}
 
@@ -115,7 +123,7 @@ class File {
 		unlink($tmpFilePath);
 	}
 
-	static public function OutputPath(string $filePath, ?string $fileName = null): void {
+	static public function OutputPath(string $filePath, string|null $fileName = null): void {
 		set_time_limit(0);
 
         if ($fileName === null)
@@ -134,6 +142,9 @@ class File {
 		flush();
 
 		$handle = fopen($filePath, "rb");
+        if ($handle === false)
+            throw new \Exception("Cannot open '{$filePath}'.");
+
 		while (!feof($handle))
     		echo fread($handle, 8192);
 		fclose($handle);
@@ -155,7 +166,7 @@ class File {
 		}
 	}
 
-	static public function Path(string $path): string {
+	static public function Path(string $path): string|null {
 		return Package::Path_FromPath($path);
 	}
 
