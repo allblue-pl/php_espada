@@ -67,9 +67,6 @@ class Layout implements ILayout {
      */
     public function __construct(string|null $layoutPath = null, 
             array|\Closure|null $fields = []) {
-        if ($layoutPath !== null)
-            $this->setPath($layoutPath);
-
         $this->filePath = null;
         $this->fields = $fields;
 
@@ -77,6 +74,9 @@ class Layout implements ILayout {
         $this->holders_Displayed = [];
 
         $this->validated = false;
+
+        if ($layoutPath !== null)
+            $this->setPath($layoutPath);
     }
 
     final public function addL(string $holderName, Layout $layout): Layout {
@@ -107,16 +107,16 @@ class Layout implements ILayout {
         } else
             $fieldsArray = $fields;
 
-        $fields = Fields::_($fieldsArray);
-        $holders = new Holders($site, $this->holderLayouts, $this->holders_Displayed);
-        $layoutViewer = new LayoutViewer($fields, $holders);
+        $eFields = Fields::_($fieldsArray);
+        $eHolders = new Holders($site, $this->holderLayouts, $this->holders_Displayed);
+        $layoutViewer = new LayoutViewer($eFields, $eHolders);
 
         if ($this->filePath === null) {
             $childClass = get_called_class();
             throw new \Exception("File path not set in layout: '{$childClass}'");
         }
 
-        self::RequireFile($this->filePath, $layoutViewer, $holders, $fields);
+        self::RequireFile($this->filePath, $layoutViewer, $eHolders, $eFields);
 
         /** @phpstan-ignore if.alwaysTrue */
         if (EDEBUG)
