@@ -3,14 +3,14 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 
 class PageAlias {
+    private array $args;
 
-    private $args = [];
-
-    public function __construct($uri) {
+    public function __construct(string $uri) {
+        $this->args = [];
         $this->parseUri($uri);
     }
 
-    public function checkUriArgs($args) {
+    public function checkUriArgs(array $args): ?array {
         $args_length = count($this->args);
 
         $extra_args = false;
@@ -56,11 +56,11 @@ class PageAlias {
         return $uri_args;
     }
 
-    public function getParts() {
+    public function getParts(): array {
         return $this->args;
     }
 
-    private function parseUri($uri) {
+    private function parseUri(string $uri): void {
         $uri_array = explode('/', $uri);
 
         $this->args = [];

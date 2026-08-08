@@ -4,8 +4,8 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 class Package {
 
-    static private $PackagePaths = null;
-    static private $Overwrites = [];
+    static private ?array $PackagePaths = null;
+    static private array $Overwrites = [];
 
     // static public function Details($filePath, $noOverwrites = false) {
     //     $filePath = $package . '/' . $path;
@@ -51,7 +51,8 @@ class Package {
     //             $dir . $path_array[1] . $ext);
     // }
 
-    static public function Path($package, $path, $noOverwrites = false) {
+    static public function Path(string $package, string $path, 
+            bool $noOverwrites = false): ?string {
         $filePath = $package . '/' . $path;
         // if ($package === 'site') {
         //     if (File::Exists(PATH_ESITE . '/' . $filePath))
@@ -80,8 +81,8 @@ class Package {
         return null;
     }
 
-    static public function Path_FromPath($path, $dir = '',
-            $ext = '') {
+    static public function Path_FromPath(string $path, string $dir = '',
+            string $ext = ''): string {
         $path_array = explode(':', $path);
         if (count($path_array) !== 2)
             throw new \Exception("Wrong path `{$path}` format.");
@@ -93,7 +94,8 @@ class Package {
                 $dir . $path_array[1] . $ext);
     }
 
-    static public function Uri($package, $path, $noOverwrites = false) {
+    static public function Uri(string $package, string $path, 
+            bool $noOverwrites = false): ?string {
         $filePath = $package . '/' . $path;
 
         // if ($package === 'site') {
@@ -121,40 +123,43 @@ class Package {
         return null;
     }
 
-    static public function Uri_FromPath($path, $dir, $ext) {
-        $path_array = explode(':', $path);
-        if (count($path_array) !== 2)
+    static public function Uri_FromPath(string $path, string $dir, string $ext): 
+            ?string {
+        $pathArray = explode(':', $path);
+        if (count($pathArray) !== 2)
             throw new \Exception("Wrong path `{$path}` format.");
 
-        return self::Uri($path_array[0],
-                $dir . '/' . $path_array[1] . $ext);
+        return self::Uri($pathArray[0],
+                $dir . '/' . $pathArray[1] . $ext);
     }
 
-    static public function Overwrite($from_package, $to_package, $path = '*') {
-		if (!isset(self::$Overwrites[$from_package]))
-			self::$Overwrites[$from_package] = [];
+    static public function Overwrite(string $fromPackage, string $toPackage, 
+            string $path = '*'): void {
+		if (!isset(self::$Overwrites[$fromPackage]))
+			self::$Overwrites[$fromPackage] = [];
 
-        if (!isset(self::$Overwrites[$from_package][$to_package]))
-            self::$Overwrites[$from_package][$to_package] = [];
+        if (!isset(self::$Overwrites[$fromPackage][$toPackage]))
+            self::$Overwrites[$fromPackage][$toPackage] = [];
 
-        if (!in_array($path, self::$Overwrites[$from_package][$to_package]))
-		      array_unshift(self::$Overwrites[$from_package][$to_package], $path);
+        if (!in_array($path, self::$Overwrites[$fromPackage][$toPackage]))
+		      array_unshift(self::$Overwrites[$fromPackage][$toPackage], $path);
 	}
 
-    static public function UnOverwrite($from_package, $to_package = null) {
-        if ($to_package === null)
-            unset(self::$Overwrites[$from_package]);
+    static public function UnOverwrite(string $fromPackage, ?string $toPackage = null):
+            void {
+        if ($toPackage === null)
+            unset(self::$Overwrites[$fromPackage]);
 
-        if (!isset(self::$Overwrites[$from_package][$to_package]))
+        if (!isset(self::$Overwrites[$fromPackage][$toPackage]))
             return;
 
-        unset(self::$Overwrites[$from_package][$to_package]);
-        if (count(self::$Overwrites[$from_package]) === 0)
-            unset(self::$Overwrites[$from_package]);
+        unset(self::$Overwrites[$fromPackage][$toPackage]);
+        if (count(self::$Overwrites[$fromPackage]) === 0)
+            unset(self::$Overwrites[$fromPackage]);
     }
 
 
-    static private function GetPackagePaths() {
+    static private function GetPackagePaths(): array {
         if (self::$PackagePaths !== null)
             return self::$PackagePaths;
 

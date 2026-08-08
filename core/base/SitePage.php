@@ -3,16 +3,15 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 
 class SitePage {
+    private string $name;
+    private Pages $pages;
 
-    private $name = '';
-    private $pages = null;
-
-    public function __construct(\E\Pages $pages, $name) {
+    public function __construct(Pages $pages, string $name) {
         $this->pages = $pages;
         $this->name = $name;
     }
 
-    public function alias($arg1, $arg2 = null) {
+    public function alias(string $arg1, ?string $arg2 = null): SitePage {
         $langName = null;
         $uri = null;
         if ($arg2 === null) {
@@ -32,5 +31,4 @@ class SitePage {
 
         return $this;
     }
-
 }

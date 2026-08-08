@@ -2,22 +2,22 @@
 defined('_ESPADA') or die(NO_ACCESS);
 
 class Fields { // implements \Iterator
-	static public function _($fields = []) {
+	static public function _(array $fields = []): Fields {
 		return new Fields($fields);
 	}
 
 
-	private $fields;
+	private array $fields;
 
-	public function __construct($fields = []) {
+	public function __construct(array $fields = []) {
 		$this->fields = $fields;
 	}
 
-	public function &__get($name) {
+	public function &__get(string $name): mixed {
 		return $this->get($name);
 	}
 
-	public function __set($name, $value) {
+	public function __set(string $name, mixed $value): void {
 		$this->fields[$name] = $value;
 	}
 
@@ -34,20 +34,20 @@ class Fields { // implements \Iterator
 		return $this->fields[$fieldName];
     }
 
-	public function getRootFields() {
+	public function getRootFields(): array {
 		return $this->fields;
 	}
 
-	public function push($value) {
+	public function push(mixed $value): void {
 		$this->fields[] = $value;
 	}
 
-	public function set($array) {
+	public function set(array $array): void {
 		$this->fields = $array;
 	}
 
-	public function setSelected($array, $field_names) {
-		foreach ($field_names as $field_name) {
+	public function setSelected(array $array, array $fieldNames): void {
+		foreach ($fieldNames as $field_name) {
 			if (!isset($array[$field_name])) {
 				Notice::Add("No `{$field_name}` in array.");
 				$this->$field_name = null;

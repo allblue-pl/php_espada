@@ -33,10 +33,10 @@ require(__DIR__."/helpers/Uri.php");
 
 class Espada {
 	static private ?Espada $Instance = null;
-	static private $Initialized = false;
-	static private $LoadedECoreClasses = [];
+	static private bool $Initialized = false;
+	static private array $LoadedECoreClasses = [];
 
-	static public function ChangePage(string $pageName) {
+	static public function ChangePage(string $pageName): void {
 		$page = \E\Pages::Get($pageName);
 		if ($page === null)
 			throw new \Exception("Page `{$pageName}` does not exist.");
@@ -44,14 +44,14 @@ class Espada {
 		self::SetPage($page);
 	}
 
-	static public function Create() {
+	static public function Create(): void {
 		if (self::$Instance !== null)
 			throw new \Exception('Espada already created.');
 
 		new Espada();
 	}
 
-    static public function Deinitialize() {
+    static public function Deinitialize(): void {
         if (self::$Instance === null)
             return;
         if (self::$Instance->site === null)
@@ -61,7 +61,7 @@ class Espada {
         self::$Instance->site = null;
 	}
 
-	static public function Initialize(\E\Site $site) {
+	static public function Initialize(\E\Site $site): void {
 		if (PREINIT_CONTENTS !== '')
 			E\Notice::Add(PREINIT_CONTENTS);
 
@@ -79,7 +79,7 @@ class Espada {
     }
 
     /** @phpstan-ignore method.unused */
-	static private function LoadECoreClass(string $class) {
+	static private function LoadECoreClass(string $class): bool {
 		if (in_array($class, self::$LoadedECoreClasses))
 			return true;
 
@@ -165,7 +165,7 @@ class Espada {
 	// 	return true;
 	// }
 
-	static public function NoAccess($message = '') {
+	static public function NoAccess(string $message = ''): void {
 		self::Deinitialize();
 
 		header('HTTP/1.0 401 Unauthorized');
@@ -173,7 +173,7 @@ class Espada {
 		exit();
 	}
 
-	static public function NotFound($message = '') {
+	static public function NotFound(string $message = ''): void {
 		self::Deinitialize();
 
 		header('HTTP/1.0 404 Not Found');
@@ -181,7 +181,7 @@ class Espada {
 		exit();
 	}
 
-	static public function Redirect(string $uri, $httpResponseCode = 303) {
+	static public function Redirect(string $uri, int $httpResponseCode = 303): void {
 		self::Deinitialize();
 
 		header('Location: ' . $uri, TRUE, $httpResponseCode);
@@ -197,7 +197,7 @@ class Espada {
 	// 			'pages/' . $page_path_array[1] . '.php');
 	// }
 
-	static public function SetPage(\E\Page $page) {
+	static public function SetPage(\E\Page $page): void {
 		if (self::$Instance !== null)
 			self::Deinitialize();
 
@@ -219,7 +219,10 @@ class Espada {
 		self::$Instance = $this;
 
 		set_exception_handler('\E\Exception::ExceptionHandler');
-		set_error_handler('\E\Exception::ErrorHandler', E_ALL);
+		set_error_handler(function(int $errno, string $errstr, string $errfile,
+			    int $errline): bool {
+            return E\Exception::ErrorHandler($errno, $errstr, $errfile, $errline);
+        }, E_ALL);
 				// E_ERROR | E_WARNING | E_NOTICE);
 
 		spl_autoload_register('Espada::LoadECoreClass');
@@ -242,7 +245,7 @@ class Espada {
 		self::SetPage(\E\Pages::Get());
 	}
 
-	public function display() {
+	public function display(): void {
 		if (self::$Instance->site === null)
 			throw new \Exception('\E\Site has not been initialized.');
 

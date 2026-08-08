@@ -1,45 +1,44 @@
 <?php namespace E;
 defined('_ESPADA') or die(NO_ACCESS);
 
-
 class Page {
+    private string $name;
+    private string $path;
+    private array $args;
 
-    private $name = '';
-    private $path = '';
-    private $args = null;
+    private array $aliases;
 
-    private $aliases = null;
+    private ?string $filePath;
 
-    private $filePath = null;
-
-    public function __construct($name, $path, $args, &$aliases) {
+    public function __construct(string $name, string $path, array $args, array &$aliases) {
         $this->name = $name;
         $this->path = $path;
         $this->args = $args;
 
         $this->aliases = &$aliases;
+        $this->filePath = null;
     }
 
-    public function getArgs() {
+    public function getArgs(): array {
         return $this->args;
     }
 
-    public function getFilePath() {
+    public function getFilePath(): string {
         if ($this->filePath === null) {
             $this->filePath = Package::Path_FromPath($this->path,
                     'pages', '.php');
-            if ($this->filePath === null)
-                throw new \Exception("Page path `{$this->path}` does not exist.");
+            // if ($this->filePath === null)
+            //     throw new \Exception("Page path `{$this->path}` does not exist.");
         }
 
         return $this->filePath;
     }
 
-    public function getName() {
+    public function getName(): string {
         return $this->name;
     }
 
-    public function getAlias($args = [], $langName = '') {
+    public function getAlias(array $args = [], string $langName = ''): string {
         $lang = Langs::Get($langName);
         if ($lang === null)
             throw new \Exception("Language `{$langName}` does not exist.");
@@ -92,7 +91,7 @@ class Page {
         return $uri;
     }
 
-    public function getAlias_Raw($langName = '') {
+    public function getAlias_Raw(string $langName = ''): string {
         $lang = Langs::Get($langName);
         if ($lang === null)
             throw new \Exception("Language `{$langName}` does not exist.");
@@ -125,7 +124,7 @@ class Page {
         return $uri;
     }
 
-    public function getAliasArgs($langName = '') {
+    public function getAliasArgs(string $langName = ''): array {
         $lang = Langs::Get($langName);
         if ($lang === null)
             throw new \Exception("Language `{$langName}` does not exist.");
@@ -144,16 +143,16 @@ class Page {
         return $args;
     }
 
-    public function getUri($uriArgs = null, $langName = '', $pathOnly = true) {
+    public function getUri(?array $uriArgs = null, string $langName = '', 
+            bool $pathOnly = true): string {
         return Uri::Page($this->name, $uriArgs, $langName, $pathOnly);
     }
 
-    public function getUri_Raw($langName = '', $pathOnly = true) {
+    public function getUri_Raw(string $langName = '', bool $pathOnly = true): string {
         return Uri::Page_Raw($this->name, $langName, $pathOnly);
     }
 
-    public function hasAlias($langName) {   
+    public function hasAlias(string $langName): bool {   
         return array_key_exists($langName, $this->aliases);
     }
-
 }

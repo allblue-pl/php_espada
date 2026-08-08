@@ -3,16 +3,16 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 
 class Uri {
-	static private $Instance = null;
+	static private ?Uri $Instance = null;
 
-	static public function Base($pathOnly = true) {
+	static public function Base(bool $pathOnly = true): string {
 		if ($pathOnly)
 			return self::$Instance->base;
 
 		return Uri::Domain() . self::$Instance->base;
 	}
 
-	static public function Current($pathOnly = true) {
+	static public function Current(bool $pathOnly = true): string {
 		if (self::$Instance === null) {
 			throw new \Exception('Cannot get current uri' .
 					' before initialization.');
@@ -24,7 +24,7 @@ class Uri {
 		return Uri::Domain() . self::$Instance->uri;
 	}
 
-	static public function Domain() {
+	static public function Domain(): string {
         /** @phpstan-ignore notIdentical.alwaysTrue */
 		if (SITE_DOMAIN !== '')
 			return SITE_DOMAIN;
@@ -33,29 +33,29 @@ class Uri {
 		return $_SERVER['HTTP_HOST'];
 	}
 
-	static public function File($path, $pathOnly = true) {
-		$file_uri = Package::Uri_FromPath($path, 'front', '');
-		if ($file_uri === null)
+	static public function File(string $path, bool $pathOnly = true): string {
+		$fileUri = Package::Uri_FromPath($path, 'front', '');
+		if ($fileUri === null)
 			Notice::Add("Cannot find front file: {$path}.");
 
 		if ($pathOnly)
-			return $file_uri;
+			return $fileUri;
 
-		return self::Domain() . $file_uri;
+		return self::Domain() . $fileUri;
 	}
 
-	static public function Media($package_name, $file_path) {
-		$package_name = mb_strtolower($package_name);
-		$fs_file_path = PATH_MEDIA . '/' . $package_name . '/' . $file_path;
+	static public function Media(string $packageName, string $filePath): ?string {
+		$packageName = mb_strtolower($packageName);
+		$fs_file_path = PATH_MEDIA . '/' . $packageName . '/' . $filePath;
 
 		if (!file_exists($fs_file_path))
 			return null;
 
-		return URI_MEDIA . $package_name . '/' . $file_path;
+		return URI_MEDIA . $packageName . '/' . $filePath;
 	}
 
-	static public function Page($pageName = null, $uriArgs = null,
-			$langName = '', $pathOnly = true, $includeBase = true) {
+	static public function Page(?string $pageName = null, ?array $uriArgs = null,
+			string $langName = '', bool $pathOnly = true, bool $includeBase = true): bool {
 		if ($pageName === null) {
 			$pageName = Pages::Get()->getName();
 

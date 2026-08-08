@@ -3,23 +3,22 @@ defined('_ESPADA') or die(NO_ACCESS);
 
 
 class Exception {
+	static private array $OnErrorListeners = [];
 
-	static private $OnErrorListeners = [];
-
-	static public function AddOnErrorListener(callable $exception_listener) {
+	static public function AddOnErrorListener(callable $exception_listener): void {
 		self::$OnErrorListeners[] = $exception_listener;
 	}
 
-    static public function ClearErrorListeners() {
+    static public function ClearErrorListeners(): void {
         self::$OnErrorListeners = [];
     }
 
 	static public function ErrorHandler(int $errno, string $errstr, string $errfile,
-			int $errline) {
+			int $errline): bool {
 		throw new \ErrorException($errstr, $errno, 0, $errfile, $errline);
 	}
 
-	static public function ExceptionHandler(\Throwable $e) {
+	static public function ExceptionHandler(\Throwable $e): void {
 		self::NotifyListeners($e);
 
         /* @phpstan-ignore booleanNot.alwaysFalse */
@@ -51,12 +50,12 @@ class Exception {
 		die();
 	}
 
-	static public function NotifyListeners(\Throwable $e) {
+	static public function NotifyListeners(\Throwable $e): void {
 		foreach (self::$OnErrorListeners as $on_error_listener)
 			$on_error_listener($e);
 	}
 
-	static public function RemoveOnErrorListener(callable $exception_listener) {
+	static public function RemoveOnErrorListener(callable $exception_listener): void {
 		$index = array_search($exception_listener, self::$OnErrorListeners);
 		if ($index === false)
 			throw new \Exception('`exception_listener` not in listeners array.');

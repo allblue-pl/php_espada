@@ -11,20 +11,27 @@ class Site implements ILayout {
 	private Modules $siteModules;
 	private ?Layout $rootLayout = null;
 
-	private $holders = [];
+	private array $holders;
 
-	private $listeners_PreInitialize = [];
-	private $listeners_PostInitialize = [];
+	private array $listeners_PreInitialize;
+	private array $listeners_PostInitialize;
 
-    private $listeners_PreDisplay = [];
+    private array $listeners_PreDisplay;
 
 
 	public function __construct() {
+        $this->holders = [];
+
+        $this->listeners_PreInitialize = [];
+        $this->listeners_PostInitialize = [];
+
+        $this->listeners_PreDisplay = [];
+
 		$this->siteModules = new Modules();
 	}
 
 
-	final public function addL(string $holderName, Layout $layout) {
+	final public function addL(string $holderName, Layout $layout): Layout {
 		if (!isset($this->holders[$holderName]))
 			$this->holders[$holderName] = [];
 		$this->holders[$holderName][] = $layout;
@@ -32,8 +39,8 @@ class Site implements ILayout {
 		return $layout;
 	}
 
-	final public function addLayout(string $holderName, Layout $layout) {
-		$this->addL($holderName, $layout);
+	final public function addLayout(string $holderName, Layout $layout): Layout {
+		return $this->addL($holderName, $layout);
 	}
 
     final public function addM(Module $module): Module {
@@ -45,16 +52,16 @@ class Site implements ILayout {
 		return $module;
 	}
 
-	final public function addModule(Module $module) {
-		$this->addM($module);
+	final public function addModule(Module $module): Module {
+		return $this->addM($module);
 	}
 
-	final public function deinitialize() {
+	final public function deinitialize(): void {
 		$this->_deinitialize();
 		$this->siteModules->deinitialize();
 	}
 
-	final public function display() {
+	final public function display(): void {
 		if ($this->rootLayout === null)
             throw new \Exception('Root layout not set.');
 
@@ -81,7 +88,7 @@ class Site implements ILayout {
 	// 	return $this->rootLayout;
 	// }
 
-	final public function initialize() {
+	final public function initialize(): void {
 		/* Pre Initialize */
 		$this->siteModules->preInitialize($this);
 
@@ -107,7 +114,7 @@ class Site implements ILayout {
 		// $this->postInitialized = true;
 	}
 
-	final public function isInitialized() {
+	final public function isInitialized(): bool {
 		return $this->initialized;
 	}
 
@@ -118,7 +125,7 @@ class Site implements ILayout {
 	// 	return $this->rootLayout->layouts;
 	// }
 
-	final public function onPostInitialize(\Closure $listener) {
+	final public function onPostInitialize(\Closure $listener): void {
         if ($this->initialized) {
             throw new \Exception("Cannot add 'PostInitialize' listener after initialization.");
         }
@@ -126,7 +133,7 @@ class Site implements ILayout {
 		$this->listeners_PostInitialize[] = $listener;
 	}
 
-    final public function onPreDisplay(\Closure $listener) {
+    final public function onPreDisplay(\Closure $listener): void {
         if ($this->preDisplayed) {
             throw new \Exception("Cannot add 'PreDisplay' listener after displaying.");
         }
@@ -134,7 +141,7 @@ class Site implements ILayout {
 		$this->listeners_PreDisplay[] = $listener;
 	}
 
-	final public function onPreInitialize(\Closure $listener) {
+	final public function onPreInitialize(\Closure $listener): void {
         if ($this->initialized) {
             throw new \Exception("Cannot add 'PreInitialize' listener after initialization.");
         }
@@ -142,28 +149,28 @@ class Site implements ILayout {
 		$this->listeners_PreInitialize[] = $listener;
 	}
 
-	final public function setRootL(Layout $layout) {
+	final public function setRootL(Layout $layout): void {
 		$this->rootLayout = $layout;
 	}
 
 	
-	protected function _deinitialize() {
+	protected function _deinitialize(): void {
 
 	}
 
-	protected function _initialize() {
+	protected function _initialize(): void {
 		$this->initialized = true;
 	}
 
-	protected function _postInitialize() {
+	protected function _postInitialize(): void {
 		
 	}
 
-	protected function _preDisplay() {
+	protected function _preDisplay(): void {
 		$this->preDisplayed = true;
 	}
 
-	protected function _preInitialize() {
+	protected function _preInitialize(): void {
 
 	}
 

@@ -5,25 +5,25 @@ defined('_ESPADA') or die(NO_ACCESS);
 class Args {
 	static private ?Args $Instance = null;
 
-	static public function File(string $name) {
+	static public function File(string $name): array {
 		if (!isset($_FILES[$name]))
 			throw new \Exception("File arg `{$name}` does not exist.");
 
 		return $_FILES[$name];
 	}
 
-	static public function Get(string $name) {
+	static public function Get(string $name): string {
 		if (!isset($_GET[$name]))
 			throw new \Exception("Get arg `{$name}` does not exist.");
 
 		return urldecode($_GET[$name]);
 	}
 
-	static public function Get_Exists($name) {
+	static public function Get_Exists(string $name): bool {
 		return array_key_exists($name, $_GET);
 	}
 
-	static public function Get_All() {
+	static public function Get_All(): array {
 		$args = [];
 		foreach ($_GET as $arg_name => $arg)
 			$args[$arg_name] = urldecode($arg);
@@ -31,22 +31,22 @@ class Args {
 		return $args;
 	}
 
-	static public function Page($name) {
+	static public function Page(string $name): array {
 		if (!isset(self::$Instance->pageArgs[$name]))
 			throw new \Exception("Page arg `{$name}` does not exist.");
 
 		return self::$Instance->pageArgs[$name];
 	}
 
-	static public function Page_Exists($name) {
+	static public function Page_Exists(string $name): bool {
 		return array_key_exists($name, self::$Instance->pageArgs);
 	}
 
-	static public function Page_All() {
+	static public function Page_All(): array {
 		return self::$Instance->pageArgs;
 	}
 
-	static public function Post($name) {
+	static public function Post(string $name): string {
 		if (isset($_POST[$name]))
 			return urldecode($_POST[$name]);
 
@@ -56,7 +56,7 @@ class Args {
         throw new \Exception("Post arg `{$name}` does not exist.");
 	}
 
-	static public function Post_All() {
+	static public function Post_All(): array {
 		$args = [];
 		foreach ($_POST as $arg_name => $arg)
 			$args[$arg_name] = $arg;
@@ -67,7 +67,7 @@ class Args {
 		return $args;
 	}
 
-    static public function Post_Exists($name) {
+    static public function Post_Exists(string $name): bool {
 		if (isset($_POST[$name]))
 			return true;
 
@@ -77,7 +77,7 @@ class Args {
 		return false;
 	}
 
-	static public function Post_ValidateSize() {
+	static public function Post_ValidateSize(): bool {
 		if($_SERVER['REQUEST_METHOD'] == 'POST' && empty($_POST) &&
                 empty($_FILES) && $_SERVER['CONTENT_LENGTH'] > 0)
 			return false;
@@ -85,33 +85,33 @@ class Args {
 		return true;
 	}
 
-	static public function Uri($name) {
+	static public function Uri(string $name): array {
 		if (!isset(self::$Instance->uriArgs[$name]))
 			throw new \Exception("Uri arg `{$name}` does not exist.");
 
 		return self::$Instance->uriArgs[$name];
 	}
 
-	static public function Uri_Exists($name) {
+	static public function Uri_Exists(string $name): bool {
 		return isset(self::$Instance->uriArgs[$name]);
 	}
 
-	static public function Uri_All() {
+	static public function Uri_All(): array {
 		return self::$Instance->uriArgs;
 	}
 
 
-    private $pageArgs = null;
-    private $uriArgs = null;
+    private array $pageArgs;
+    private array $uriArgs;
 
-	public function __construct($page_args, $uri_args) {
+	public function __construct(array $pageArgs, array $uriArgs) {
 		if (self::$Instance !== null)
 			throw new \Exception('\E\Args already created.');
 
 		self::$Instance = $this;
 
-		$this->pageArgs = $page_args;
-		$this->uriArgs = $uri_args;
+		$this->pageArgs = $pageArgs;
+		$this->uriArgs = $uriArgs;
 	}
 
 }
