@@ -47,7 +47,7 @@ class Fields { // implements \Iterator
     /**
      * @return array<string, mixed> 
      */
-	public function getRootFields(): array {
+	public function _getRootFields(): array {
 		return $this->fields;
 	}
 
@@ -55,7 +55,7 @@ class Fields { // implements \Iterator
      * @param array<string, mixed> $array 
      * @return void 
      */
-	public function set(array $array): void {
+	public function _set(array $array): void {
 		$this->fields = $array;
 	}
 
@@ -64,9 +64,9 @@ class Fields { // implements \Iterator
      * @param list<string> $fieldNames 
      * @return void 
      */
-	public function setSelected(array $fields, array $fieldNames): void {
+	public function _setSelected(array $fields, array $fieldNames): void {
 		foreach ($fieldNames as $fieldName) {
-			if (!isset($fields[$fieldName])) {
+			if (!array_key_exists($fieldName, $fields)) {
 				Notice::Add("No `{$fieldName}` in array.");
 				$this->$fieldName = null;
 				continue;

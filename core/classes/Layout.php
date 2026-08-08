@@ -14,7 +14,7 @@ class Layout implements ILayout {
      * @param null|T_LayoutFields $fields 
      * @return Layout 
      */
-    static public function _(string $layoutPath, array|null|\Closure $fields = null): Layout {
+    static public function _(string $layoutPath, array|\Closure|null $fields = null): Layout {
         return new Layout($layoutPath, $fields);
     }
 
@@ -33,7 +33,7 @@ class Layout implements ILayout {
 
     static private function RequireFile(string $eFilePath, LayoutViewer $l, 
             Holders $eHolders, Fields $eFields): void {
-        $fields = $eFields->getRootFields();
+        $fields = $eFields->_getRootFields();
 
         foreach ($fields as $field_name => $field_value) {
             $field_name = '_' . $field_name;

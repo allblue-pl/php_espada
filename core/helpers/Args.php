@@ -55,7 +55,7 @@ class Args {
 
 	static public function Page(string $name): mixed {
 		if (!isset(self::$Instance->pageArgs[$name]))
-			throw new \Exception("Page arg `{$name}` does not exist.");
+			throw new \Exception("Page arg `{$name}` not set.");
 
 		return self::$Instance->pageArgs[$name];
 	}
