@@ -118,7 +118,6 @@ class Layout implements ILayout {
 
         self::RequireFile($this->filePath, $layoutViewer, $eHolders, $eFields);
 
-        /** @phpstan-ignore if.alwaysTrue */
         if (EDEBUG)
             $this->validateHolders();
     }

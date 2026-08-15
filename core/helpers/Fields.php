@@ -33,7 +33,6 @@ class Fields { // implements \Iterator
 
     public function &get(string $fieldName): mixed {
         if (!in_array($fieldName, array_keys($this->fields))) {
-            /** @phpstan-ignore if.alwaysTrue */
 			if (EDEBUG)
 				Notice::Add("Field `{$fieldName}` not set.");
 

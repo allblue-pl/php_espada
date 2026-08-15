@@ -32,7 +32,6 @@ class Holders {
 
     public function view(string $holderName): void {
         if (!isset($this->holderLayoutsArr[$holderName])) {
-            /* @phpstan-ignore if.alwaysTrue */
             if (EDEBUG)
                 Notice::Add("Empty holder `{$holderName}`.");
 

@@ -65,10 +65,8 @@ class Espada {
 	static public function Initialize(\E\Site $site): void {
         assert(self::$Instance !== null);
 
-		if (PREINIT_CONTENTS !== '') {
-            /** @phpstan-ignore argument.type */
+		if (PREINIT_CONTENTS !== '')
 			E\Notice::Add(PREINIT_CONTENTS);
-        }
 
 		if (self::$Instance->site !== null)
 			throw new \Exception("Espada already initialized.");

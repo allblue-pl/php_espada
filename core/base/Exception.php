@@ -24,7 +24,6 @@ class Exception {
 	static public function ExceptionHandler(\Throwable $e): void {
 		self::NotifyListeners($e);
 
-        /* @phpstan-ignore booleanNot.alwaysFalse */
 		if (!EDEBUG)
 			die (INTERNAL_ERROR_MESSAGE);
 
