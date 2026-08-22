@@ -105,7 +105,7 @@ class Args {
 		foreach ($_FILES as $argName => $arg) {
             /** @var string $argName */
             /** @var string $arg */
-			$args[$argName] = urldecode($arg);
+			$args[$argName] = $arg;
         }
 
 		return $args;
