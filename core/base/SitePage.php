@@ -15,7 +15,7 @@ class SitePage {
         $langName = null;
         $uri = null;
         if ($arg2 === null) {
-            $langName = '';
+            $langName = '*';
             $uri = $arg1;
         } else {
             $langName = $arg1;

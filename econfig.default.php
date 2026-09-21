@@ -11,7 +11,7 @@ define('NO_ACCESS', 'No access.');
 define('INTERNAL_ERROR_MESSAGE', 'Internal error.');
 
 define('SITE_DOMAIN', 'http://localhost');
-define('SITE_BASE', '/website-dev/api/');
+define('SITE_BASE', '/');
 
 define('PATH_ESPADA', __DIR__ . '/esite/espada');
 
