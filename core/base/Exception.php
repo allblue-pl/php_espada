@@ -18,6 +18,10 @@ class Exception {
 
 	static public function ErrorHandler(int $errno, string $errstr, string $errfile,
 			int $errline): bool {
+        /* Should be more specific. */
+        if (strpos($errstr, 'libpng warning') !== false)
+            return true;
+
 		throw new \ErrorException($errstr, $errno, 0, $errfile, $errline);
 	}
 
