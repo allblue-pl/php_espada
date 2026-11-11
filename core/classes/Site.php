@@ -7,6 +7,7 @@ defined('_ESPADA') or die(NO_ACCESS);
  */
 
 class Site implements ILayout {
+    private bool $loaded = false;
 	private bool $preDisplayed = false;
 	// private $preInitialized = false;
 	private bool $initialized = false;
@@ -19,6 +20,8 @@ class Site implements ILayout {
 	private array $holderLayouts;
 
     /** @var array<T_SiteListener> */
+	private array $listeners_Load;
+    /** @var array<T_SiteListener> */
 	private array $listeners_PreInitialize;
     /** @var array<T_SiteListener> */
 	private array $listeners_PostInitialize;
@@ -29,6 +32,8 @@ class Site implements ILayout {
 
 	public function __construct() {
         $this->holderLayouts = [];
+
+        $this->listeners_Load = [];
 
         $this->listeners_PreInitialize = [];
         $this->listeners_PostInitialize = [];
@@ -100,6 +105,12 @@ class Site implements ILayout {
 	// }
 
 	final public function initialize(): void {
+        /* Load */
+        $this->loaded = true;
+        $this->_load();
+        foreach ($this->listeners_Load as $listener)
+			$listener($this);
+
 		/* Pre Initialize */
 		$this->siteModules->preInitialize($this);
 
@@ -135,6 +146,14 @@ class Site implements ILayout {
 
 	// 	return $this->rootLayout->layouts;
 	// }
+
+    final public function onLoad(\Closure $listener): void {
+        if ($this->loaded) {
+            throw new \Exception("Cannot add 'Load' listener after load.");
+        }
+
+		$this->listeners_Load[] = $listener;
+	}
 
 	final public function onPostInitialize(\Closure $listener): void {
         if ($this->initialized) {
@@ -172,6 +191,10 @@ class Site implements ILayout {
 	protected function _initialize(): void {
 		$this->initialized = true;
 	}
+
+    protected function _load(): void {
+
+    }
 
 	protected function _postInitialize(): void {
 		
